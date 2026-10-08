@@ -610,7 +610,7 @@ public class MainActivity extends Activity {
 
     /** 点「思考」弹出强度选择，选完自动收起 */
     private void pickThinking() {
-        final String[] labels = new String[]{"关掉思考", "low", "high", "max"};
+        final String[] labels = new String[]{Lang.t("关掉思考"), "low", "high", "max"};
         final String[] vals = new String[]{"none", "low", "high", "max"};
         String cur = store.thinkingOn() ? store.effort() : "none";
         String[] shown = new String[labels.length];
@@ -636,8 +636,9 @@ public class MainActivity extends Activity {
 
     private String nowLine() {
         java.text.SimpleDateFormat f =
-                new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm EEEE", java.util.Locale.CHINA);
-        return f.format(new java.util.Date()) + "（Asia/Shanghai）";
+                new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm EEEE",
+                        Lang.isEn() ? java.util.Locale.US : java.util.Locale.CHINA);
+        return f.format(new java.util.Date()) + (Lang.isEn() ? " (Asia/Shanghai)" : "（Asia/Shanghai）");
     }
 
     /** 侧边栏的「清空对话」：只删当前对话，提示词与记忆保留 */
@@ -1030,7 +1031,7 @@ public class MainActivity extends Activity {
     }
 
     private void addNote(String text) {
-        addBubble(UiKit.TYPE_NOTE, text);
+        addBubble(UiKit.TYPE_NOTE, Lang.t(text));
     }
 
     /** 用户消息：带附件时显示缩略图；长按出撤回菜单 */

@@ -2,6 +2,7 @@
 /out/
 
 # 打包产物：一律不提交，安装包走 GitHub Releases 发布
+*.apk
 *.idsig
 *.ap_
 *.dex

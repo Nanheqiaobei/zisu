@@ -108,6 +108,7 @@ public class UiKit {
 
     /** 每个界面的 onCreate 都走这里：主题、按钮颜色、磨砂、背景图、字体、动画开关 */
     public static void boot(Context c, Store s) {
+        s.applyLang();
         animationsOn = s.animOn();
         applyTheme(s.isDark());
         setAccent(s.accentColor(isDarkTheme));
@@ -120,7 +121,7 @@ public class UiKit {
     public static String styleKey(Store s) {
         return (s.isDark() ? "d" : "l") + "|" + s.accentColor(s.isDark()) + "|" + s.frosted()
                 + "|" + s.frostPercent() + "|" + s.bgPath() + "|" + s.bgClarity() + "|"
-                + s.bgBlur() + "|" + s.fontPath() + "|" + s.chatMode();
+                + s.bgBlur() + "|" + s.fontPath() + "|" + s.chatMode() + "|" + s.resolvedLang();
     }
 
     /** color 传 0 表示用主题自带的那支颜色 */
@@ -533,7 +534,7 @@ public class UiKit {
 
     public static TextView label(Context c, String s, float sp, int color, boolean bold, int gravity) {
         TextView tv = new TextView(c);
-        tv.setText(s == null ? "" : s);
+        tv.setText(s == null ? "" : Lang.t(s));
         tv.setTextSize(sp);
         tv.setTextColor(color);
         tv.setLineSpacing(dp(c, 5), 1f);

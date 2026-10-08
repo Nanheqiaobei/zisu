@@ -58,6 +58,10 @@ public class AgreementActivity extends Activity {
                         0f, this, 0, 0, 0, 6));
         root.addView(UiKit.label(this, "使用前请阅读并同意以下内容", 12, UiKit.TEXT_SUB, false, Gravity.START),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                        0f, this, 0, 0, 0, 12));
+
+        root.addView(buildLangSwitch(),
+                UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 0, 0, 16));
 
         root.addView(cardOf("关于本软件", new String[]{
@@ -131,6 +135,37 @@ public class AgreementActivity extends Activity {
         startCountdown();
     }
 
+    /** 顶部语言切换：中文 / English 两个胶囊，点一下换语言并重建 */
+    private View buildLangSwitch() {
+        LinearLayout row = UiKit.row(this);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.addView(UiKit.label(this, "切换语言", 12, UiKit.TEXT_SUB, false, Gravity.START),
+                UiKit.lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                        0f, this, 0, 0, 12, 0));
+        row.addView(langPill("中文", Lang.ZH));
+        row.addView(langPill("English", Lang.EN),
+                UiKit.lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                        0f, this, 8, 0, 0, 0));
+        return row;
+    }
+
+    private TextView langPill(String name, final int mode) {
+        final boolean on = (store.langMode() == mode);
+        TextView tv = UiKit.label(this, name, 12.5f, on ? 0xFFFFFFFF : UiKit.TEXT, on, Gravity.CENTER);
+        tv.setPadding(UiKit.dp(this, 14), UiKit.dp(this, 7), UiKit.dp(this, 14), UiKit.dp(this, 7));
+        tv.setBackground(UiKit.shape(this, on ? UiKit.ACCENT : UiKit.CHIP_BG,
+                on ? 0 : UiKit.BORDER, 20));
+        tv.setClickable(true);
+        UiKit.pressable(tv);
+        tv.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                store.setLangMode(mode);
+                recreate();
+            }
+        });
+        return tv;
+    }
+
     /** 一段带标题的协议卡片 */
     private View cardOf(String title, String[] lines) {
         LinearLayout box = UiKit.column(this);
@@ -157,14 +192,14 @@ public class AgreementActivity extends Activity {
     private void tick() {
         if (left <= 0) {
             if (agreeBtn != null) {
-                agreeBtn.setText("同意并继续");
+                agreeBtn.setText(Lang.t("同意并继续"));
                 agreeBtn.setEnabled(true);
                 agreeBtn.setAlpha(1f);
             }
             return;
         }
         if (agreeBtn != null) {
-            agreeBtn.setText("请阅读协议 " + left + " 秒");
+            agreeBtn.setText(Lang.isEn() ? ("Please read " + left + "s") : ("请阅读协议 " + left + " 秒"));
         }
         ui.postDelayed(new Runnable() {
             public void run() {

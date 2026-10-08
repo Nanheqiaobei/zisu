@@ -631,6 +631,37 @@ public class Store {
         sp.edit().putBoolean("agreed", on).apply();
     }
 
+    // ---- 界面语言 ----
+    /** -1 跟随系统，0 中文，1 英文 */
+    public int langMode() {
+        return sp.getInt("lang_mode", -1);
+    }
+
+    public void setLangMode(int m) {
+        sp.edit().putInt("lang_mode", m).apply();
+    }
+
+    /** 按当前设置解析出实际语言（跟随系统时读系统区域） */
+    public int resolvedLang() {
+        int m = langMode();
+        if (m == Lang.ZH || m == Lang.EN) {
+            return m;
+        }
+        try {
+            String code = java.util.Locale.getDefault().getLanguage();
+            return "zh".equalsIgnoreCase(code) ? Lang.ZH : Lang.EN;
+        } catch (Exception e) {
+            return Lang.ZH;
+        }
+    }
+
+    /** 把语言设置同步到 Lang，并返回实际语言 */
+    public int applyLang() {
+        int r = resolvedLang();
+        Lang.set(r);
+        return r;
+    }
+
 
     // ---- 聊天方式 ----
 

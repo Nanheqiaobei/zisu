@@ -180,6 +180,27 @@ public class SettingsActivity extends Activity {
                         ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 0));
         UiKit.card(root, data, this);
 
+        // ============ 语言 ============
+        LinearLayout lang = UiKit.column(this);
+        lang.setPadding(UiKit.dp(this, 18), UiKit.dp(this, 16), UiKit.dp(this, 18), UiKit.dp(this, 16));
+        lang.addView(UiKit.sectionTitle(this, "语言"),
+                UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                        0f, this, 0, 0, 0, 10));
+        lang.addView(UiKit.label(this, "界面语言只影响本软件的显示，不影响对话内容",
+                        12.5f, UiKit.TEXT_SUB, false, Gravity.START),
+                UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                        0f, this, 0, 0, 0, 12));
+        lang.addView(UiKit.button(this, "打开语言设置", 0xFFFFFFFF, UiKit.ACCENT, 12,
+                        new View.OnClickListener() {
+                            public void onClick(View v) {
+                                startActivity(new Intent(SettingsActivity.this,
+                                        LanguageActivity.class));
+                            }
+                        }),
+                UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 0));
+        UiKit.card(root, lang, this);
+
         // ============ 关于 ============
         buildAbout(root);
 

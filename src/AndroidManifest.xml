@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.selfprompt.app">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:label="自塑"
+        android:allowBackup="false"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/SelfPromptTheme">
+        <activity
+            android:name=".AgreementActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ModelConfigActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ToolsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AppearanceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PromptActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CoreActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SystemInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MemoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ArchiveActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CropActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AboutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LicenseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DataActivity"
+            android:exported="false" />
+    </application>
+</manifest>

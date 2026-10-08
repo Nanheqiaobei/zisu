@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 云备份排除规则：selfprompt_prefs 里含 API key、对话、记忆，一律不上传 -->
+<full-backup-content>
+    <exclude domain="sharedpref" path="selfprompt_prefs.xml" />
+    <exclude domain="file" path="attach" />
+    <exclude domain="file" path="avatars" />
+    <exclude domain="file" path="background" />
+    <exclude domain="file" path="fonts" />
+</full-backup-content>

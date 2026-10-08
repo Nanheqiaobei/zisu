@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 界面切换的动效：轻滑加淡入淡出，不抢戏 -->
+    <style name="SelfPromptTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:windowAnimationStyle">@style/SelfPromptAnim</item>
+    </style>
+    <style name="SelfPromptAnim" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/act_open_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/act_open_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/act_close_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/act_close_out</item>
+    </style>
+    <!-- 弹窗两套：浅色/深色各一套，窗口背景用圆角，不然是直角方块 -->
+    <style name="SelfPromptDialogLight" parent="@android:style/Theme.Material.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_round_light</item>
+    </style>
+    <style name="SelfPromptDialogDark" parent="@android:style/Theme.Material.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_round_dark</item>
+    </style>
+</resources>

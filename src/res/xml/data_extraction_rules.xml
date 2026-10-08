@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+ 数据提取规则：云端备份与设备间迁移都排除含 key 的偏好文件 -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="sharedpref" path="selfprompt_prefs.xml" />
+        <exclude domain="file" path="attach" />
+        <exclude domain="file" path="avatars" />
+        <exclude domain="file" path="background" />
+        <exclude domain="file" path="fonts" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" path="selfprompt_prefs.xml" />
+        <exclude domain="file" path="attach" />
+        <exclude domain="file" path="avatars" />
+        <exclude domain="file" path="background" />
+        <exclude domain="file" path="fonts" />
+    </device-transfer>
+</data-extraction-rules>

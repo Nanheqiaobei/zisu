@@ -1,0 +1,24 @@
+# 构建中间产物
+/out/
+
+# 打包产物
+*.apk
+*.idsig
+*.ap_
+*.dex
+*.class
+
+# 签名文件（debug.keystore 密码是公开的标准值，提交上去会被冒用签包；release keystore 绝不可提交）
+*.keystore
+*.jks
+*.p12
+
+# 源码备份目录
+src_bak_*/
+
+# 编辑器与系统杂项
+.idea/
+*.iml
+.gradle/
+.DS_Store
+Thumbs.db

@@ -263,9 +263,9 @@ public class MainActivity extends Activity {
             if (titleBar != null) {
                 titleBar.setText(store.coreName());
             }
-            chip.setText(store.activeName() + " · " + store.aiBlocks().length() + "块 · v"
+            chip.setText(store.activeName() + " · " + store.aiBlocks().length() + Lang.t("块 · v")
                     + store.aiVersions().length() + " · " + store.model()
-                    + (store.apiKey().isEmpty() ? " · 未配置 key" : ""));
+                    + (store.apiKey().isEmpty() ? Lang.t(" · 未配置 key") : ""));
         }
     }
 
@@ -514,12 +514,12 @@ public class MainActivity extends Activity {
             return;
         }
         boolean th = store.thinkingOn();
-        thinkBtn.setText(th ? ("思考 · " + store.effort()) : "思考 · 关");
+        thinkBtn.setText(th ? (Lang.t("思考 · ") + store.effort()) : Lang.t("思考 · 关"));
         thinkBtn.setBackground(UiKit.shape(this, th ? UiKit.ACCENT : UiKit.CHIP_BG, 0, 24));
         thinkBtn.setTextColor(th ? 0xFFFFFFFF : UiKit.TEXT_SUB);
 
         boolean rt = store.realtimeOn();
-        realtimeBtn.setText(rt ? "实时时间 · 开" : "实时时间");
+        realtimeBtn.setText(rt ? Lang.t("实时时间 · 开") : Lang.t("实时时间"));
         realtimeBtn.setBackground(UiKit.shape(this, rt ? UiKit.ACCENT : UiKit.CHIP_BG, 0, 24));
         realtimeBtn.setTextColor(rt ? 0xFFFFFFFF : UiKit.TEXT_SUB);
     }
@@ -618,7 +618,7 @@ public class MainActivity extends Activity {
             shown[i] = vals[i].equals(cur) ? (labels[i] + "　✓") : labels[i];
         }
         UiKit.dialog(this)
-                .setTitle("思考强度")
+                .setTitle(Lang.t("思考强度"))
                 .setItems(shown, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         if ("none".equals(vals[which])) {
@@ -630,7 +630,7 @@ public class MainActivity extends Activity {
                         refreshToggles();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
@@ -643,17 +643,17 @@ public class MainActivity extends Activity {
     /** 侧边栏的「清空对话」：只删当前对话，提示词与记忆保留 */
     private void confirmClearChat() {
         UiKit.dialog(this)
-                .setTitle("清空对话记录")
-                .setMessage("对话记录会被删除，提示词版本、记忆和配置都会保留。要继续吗")
-                .setPositiveButton("清空", new DialogInterface.OnClickListener() {
+                .setTitle(Lang.t("清空对话记录"))
+                .setMessage(Lang.t("对话记录会被删除，提示词版本、记忆和配置都会保留。要继续吗"))
+                .setPositiveButton(Lang.t("清空"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.clearMessages();
                         history = store.messages();
                         renderAll();
-                        addNote("对话记录已清空");
+                        addNote(Lang.t("对话记录已清空"));
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
@@ -1126,7 +1126,7 @@ public class MainActivity extends Activity {
                                 }
                             }
                         })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
@@ -1198,7 +1198,7 @@ public class MainActivity extends Activity {
                     getSystemService(CLIPBOARD_SERVICE);
             cm.setPrimaryClip(android.content.ClipData.newPlainText("message",
                     m.optString("content", "")));
-            android.widget.Toast.makeText(this, "已复制", android.widget.Toast.LENGTH_SHORT).show();
+            android.widget.Toast.makeText(this, Lang.t("已复制"), android.widget.Toast.LENGTH_SHORT).show();
         } catch (Exception ignored) {
         }
     }
@@ -1244,13 +1244,13 @@ public class MainActivity extends Activity {
 
     private void pickAttach() {
         UiKit.dialog(this)
-                .setTitle("添加附件")
+                .setTitle(Lang.t("添加附件"))
                 .setItems(new String[]{"图片", "文件"}, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         openPicker(which == 0);
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
@@ -1316,7 +1316,7 @@ public class MainActivity extends Activity {
     private String saveImage(byte[] bytes, String name) throws Exception {
         File dir = new File(getFilesDir(), "attach");
         if (!dir.exists() && !dir.mkdirs()) {
-            throw new Exception("无法创建附件目录");
+            throw new Exception(Lang.t("无法创建附件目录"));
         }
         String safe = name == null ? "img" : name.replaceAll("[^a-zA-Z0-9._\\u4e00-\\u9fa5-]", "_");
         File f = new File(dir, System.currentTimeMillis() + "_" + safe);
@@ -1390,7 +1390,7 @@ public class MainActivity extends Activity {
     private byte[] readBytes(Uri uri, int cap) throws Exception {
         InputStream is = getContentResolver().openInputStream(uri);
         if (is == null) {
-            throw new Exception("无法读取这个文件");
+            throw new Exception(Lang.t("无法读取这个文件"));
         }
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] buf = new byte[8192];
@@ -1400,7 +1400,7 @@ public class MainActivity extends Activity {
             total += n;
             if (total > cap) {
                 is.close();
-                throw new Exception("图片超过 4MB，换一张小一点的");
+                throw new Exception(Lang.t("图片超过 4MB，换一张小一点的"));
             }
             bos.write(buf, 0, n);
         }
@@ -2230,15 +2230,15 @@ public class MainActivity extends Activity {
                 11.5f, fSub, false, Gravity.START));
 
         UiKit.dialog(this)
-                .setTitle("它想改自己的设定")
+                .setTitle(Lang.t("它想改自己的设定"))
                 .setView(box)
                 .setCancelable(false)
-                .setPositiveButton("确认修改", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Lang.t("确认修改"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         applySelfChange(body, reason);
                     }
                 })
-                .setNegativeButton("不修改", new DialogInterface.OnClickListener() {
+                .setNegativeButton(Lang.t("不修改"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         afterReject();
                     }
@@ -2268,15 +2268,15 @@ public class MainActivity extends Activity {
     /** 第二问：要不要给它一句意见 */
     private void askOpinion() {
         UiKit.dialog(this)
-                .setTitle("要不要给它一条意见")
-                .setMessage("你这次没采纳这版方案。可以留一句话给它，它照着这条意见重想一遍")
+                .setTitle(Lang.t("要不要给它一条意见"))
+                .setMessage(Lang.t("你这次没采纳这版方案。可以留一句话给它，它照着这条意见重想一遍"))
                 .setCancelable(false)
-                .setPositiveButton("给一条意见", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Lang.t("给一条意见"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         askOpinionText();
                     }
                 })
-                .setNegativeButton("算了", new DialogInterface.OnClickListener() {
+                .setNegativeButton(Lang.t("算了"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         rejectAndExit();
                     }
@@ -2306,10 +2306,10 @@ public class MainActivity extends Activity {
                 11.5f, 0xFF8A9099, false, Gravity.START));
 
         UiKit.dialog(this)
-                .setTitle("给它一条意见")
+                .setTitle(Lang.t("给它一条意见"))
                 .setView(box)
                 .setCancelable(false)
-                .setPositiveButton("发送", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Lang.t("发送"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         String o = in.getText().toString().trim();
                         if (o.isEmpty()) {
@@ -2317,12 +2317,12 @@ public class MainActivity extends Activity {
                             return;
                         }
                         opinionUsed = true;
-                        showToolStrip("它带着你的意见重想一版…");
+                        showToolStrip(Lang.t("它带着你的意见重想一版…"));
                         selfModifying = false;
                         runSelfModify(null, null, o, true);
                     }
                 })
-                .setNegativeButton("算了", new DialogInterface.OnClickListener() {
+                .setNegativeButton(Lang.t("算了"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         rejectAndExit();
                     }

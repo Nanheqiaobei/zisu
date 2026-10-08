@@ -647,7 +647,7 @@ public interface SliderCallback {
 
     public static EditText field(Context c, String hint, String value) {
         EditText e = new EditText(c);
-        e.setHint(hint);
+        e.setHint(Lang.t(hint));
         e.setText(value == null ? "" : value);
         e.setTextSize(15);
         e.setTextColor(TEXT);

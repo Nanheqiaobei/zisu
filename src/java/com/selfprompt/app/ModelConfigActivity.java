@@ -271,8 +271,8 @@ public class ModelConfigActivity extends Activity {
     // ============ 配置 ============
 
     private void refreshFields() {
-        profileLabel.setText("当前配置：" + store.activeName()
-                + "（共 " + store.profileCount() + " 套，点右上角可新建或切换）");
+        profileLabel.setText(Lang.t("当前配置：") + store.activeName()
+                + Lang.t("（共 ") + store.profileCount() + Lang.t(" 套，点右上角可新建或切换）"));
         base.setText(store.baseUrl());
         key.setText(store.apiKey());
         model.setText(store.model());
@@ -288,8 +288,8 @@ public class ModelConfigActivity extends Activity {
             public void onPick(int which) {
                 store.setActive(which);
                 refreshFields();
-                balanceStatus.setText("尚未查询");
-                modelStatus.setText("填好 key 之后会自动获取可用模型");
+                balanceStatus.setText(Lang.t("尚未查询"));
+                modelStatus.setText(Lang.t("填好 key 之后会自动获取可用模型"));
                 if (store.apiKey().length() > 0) {
                     autoQuery();
                 }
@@ -342,7 +342,7 @@ public class ModelConfigActivity extends Activity {
         AlertDialog d = UiKit.dialog(this)
                 .setTitle(title)
                 .setView(sv)
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .create();
         holder[0] = d;
         d.show();
@@ -355,36 +355,36 @@ public class ModelConfigActivity extends Activity {
         box.addView(input, UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 0));
         UiKit.dialog(this)
-                .setTitle("新建配置")
+                .setTitle(Lang.t("新建配置"))
                 .setView(box)
-                .setPositiveButton("创建", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Lang.t("创建"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.createProfile(input.getText().toString());
                         refreshFields();
-                        Toast.makeText(ModelConfigActivity.this, "已新建并切换到新配置",
+                        Toast.makeText(ModelConfigActivity.this, Lang.t("已新建并切换到新配置"),
                                 Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
     private void deleteProfile() {
         if (store.profileCount() <= 1) {
-            Toast.makeText(this, "只剩一套配置，不能删除", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("只剩一套配置，不能删除"), Toast.LENGTH_SHORT).show();
             return;
         }
         UiKit.dialog(this)
-                .setTitle("删除配置")
-                .setMessage("会删除「" + store.activeName() + "」这套接口配置，已保存的 key 仍在 key 池里")
-                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                .setTitle(Lang.t("删除配置"))
+                .setMessage(Lang.t("会删除「") + store.activeName() + Lang.t("」这套接口配置，已保存的 key 仍在 key 池里"))
+                .setPositiveButton(Lang.t("删除"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.deleteActiveProfile();
                         refreshFields();
-                        Toast.makeText(ModelConfigActivity.this, "已删除", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ModelConfigActivity.this, Lang.t("已删除"), Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
@@ -392,9 +392,9 @@ public class ModelConfigActivity extends Activity {
         final LinearLayout col = UiKit.column(this);
         col.setPadding(UiKit.dp(this, 18), UiKit.dp(this, 4), UiKit.dp(this, 18), UiKit.dp(this, 4));
         final AlertDialog dlg = UiKit.dialog(this)
-                .setTitle("管理 key（只属于当前配置）")
+                .setTitle(Lang.t("管理 key（只属于当前配置）"))
                 .setView(col)
-                .setNegativeButton("关闭", null)
+                .setNegativeButton(Lang.t("关闭"), null)
                 .create();
         fillKeyRows(col, dlg);
         dlg.show();
@@ -439,7 +439,7 @@ public class ModelConfigActivity extends Activity {
                         public void onClick(View v) {
                             store.removeSavedKeyAt(idx);
                             fillKeyRows(col, dlg);
-                            Toast.makeText(ModelConfigActivity.this, "已删除该 key",
+                            Toast.makeText(ModelConfigActivity.this, Lang.t("已删除该 key"),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }));
@@ -466,10 +466,10 @@ public class ModelConfigActivity extends Activity {
         final String u = base.getText().toString().trim();
         final String k = key.getText().toString().trim();
         if (u.isEmpty() || k.isEmpty()) {
-            balanceStatus.setText("Base URL 和 API Key 都填上才能查询");
+            balanceStatus.setText(Lang.t("Base URL 和 API Key 都填上才能查询"));
             return;
         }
-        balanceStatus.setText("查询中…");
+        balanceStatus.setText(Lang.t("查询中…"));
         ApiTools.balance(u, k, new ApiTools.TextCallback() {
             public void onResult(final String text, final boolean ok) {
                 runOnUiThread(new Runnable() {
@@ -486,10 +486,10 @@ public class ModelConfigActivity extends Activity {
         final String u = base.getText().toString().trim();
         final String k = key.getText().toString().trim();
         if (u.isEmpty() || k.isEmpty()) {
-            modelStatus.setText("Base URL 和 API Key 都填上才能获取");
+            modelStatus.setText(Lang.t("Base URL 和 API Key 都填上才能获取"));
             return;
         }
-        modelStatus.setText(showDialog ? "获取中…" : "自动获取模型中…");
+        modelStatus.setText(showDialog ? Lang.t("获取中…") : Lang.t("自动获取模型中…"));
         ApiTools.modelIds(u, k, new ApiTools.TextCallback() {
             public void onResult(final String text, final boolean ok) {
                 runOnUiThread(new Runnable() {
@@ -508,7 +508,7 @@ public class ModelConfigActivity extends Activity {
                             }
                         }
                         modelStatus.setTextColor(UiKit.TEXT_SUB);
-                        modelStatus.setText("可用模型：" + join(ids) + "（点“获取模型”切换）");
+                        modelStatus.setText(Lang.t("可用模型：") + join(ids) + Lang.t("（点“获取模型”切换）"));
                         if (model.getText().toString().trim().isEmpty() && !ids.isEmpty()) {
                             model.setText(ids.get(0));
                         }
@@ -592,25 +592,25 @@ public class ModelConfigActivity extends Activity {
         UiKit.dialog(this)
                 .setTitle(title)
                 .setView(box)
-                .setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Lang.t("保存"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         String t = input.getText().toString().trim();
                         store.setFnPrompt(fn, t);
                         refreshFnPromptLabels();
                         Toast.makeText(ModelConfigActivity.this,
-                                t.isEmpty() ? "已改回内置默认" : "已保存自定义提示词",
+                                t.isEmpty() ? Lang.t("已改回内置默认") : Lang.t("已保存自定义提示词"),
                                 Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNeutralButton("恢复默认", new DialogInterface.OnClickListener() {
+                .setNeutralButton(Lang.t("恢复默认"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.setFnPrompt(fn, "");
                         refreshFnPromptLabels();
-                        Toast.makeText(ModelConfigActivity.this, "已改回内置默认",
+                        Toast.makeText(ModelConfigActivity.this, Lang.t("已改回内置默认"),
                                 Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
@@ -658,7 +658,7 @@ public class ModelConfigActivity extends Activity {
         }
         store.saveActiveConfig(base.getText().toString(), key.getText().toString(),
                 model.getText().toString(), temp, topP, tokens);
-        Toast.makeText(this, "已保存", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, Lang.t("已保存"), Toast.LENGTH_SHORT).show();
         finish();
     }
 

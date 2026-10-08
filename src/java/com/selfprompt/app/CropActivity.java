@@ -44,7 +44,7 @@ public class CropActivity extends Activity {
         String src = getIntent() == null ? null : getIntent().getStringExtra(EXTRA_SRC);
         dst = getIntent() == null ? null : getIntent().getStringExtra(EXTRA_DST);
         if (src == null || !new File(src).exists() || dst == null) {
-            Toast.makeText(this, "图片有问题，重选一张", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("图片有问题，重选一张"), Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -63,7 +63,7 @@ public class CropActivity extends Activity {
         } catch (Exception ignored) {
         }
         if (bmp == null) {
-            Toast.makeText(this, "这张图读不出来", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("这张图读不出来"), Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -113,7 +113,7 @@ public class CropActivity extends Activity {
         try {
             Bitmap out = cropView.crop();
             if (out == null) {
-                Toast.makeText(this, "裁不出来，换个位置试试", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, Lang.t("裁不出来，换个位置试试"), Toast.LENGTH_SHORT).show();
                 return;
             }
             Bitmap small = Bitmap.createScaledBitmap(out, 512, 512, true);
@@ -128,7 +128,7 @@ public class CropActivity extends Activity {
             setResult(RESULT_OK, new Intent().putExtra(EXTRA_DST, f.getAbsolutePath()));
             finish();
         } catch (Exception e) {
-            Toast.makeText(this, "保存失败：" + e.getClass().getSimpleName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("保存失败：") + e.getClass().getSimpleName(), Toast.LENGTH_SHORT).show();
         }
     }
 

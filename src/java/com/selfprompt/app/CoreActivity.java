@@ -78,7 +78,7 @@ public class CoreActivity extends Activity {
                         new View.OnClickListener() {
                             public void onClick(View v) {
                                 store.saveCore(name.getText().toString(), "");
-                                Toast.makeText(CoreActivity.this, "已保存，改动已留痕",
+                                Toast.makeText(CoreActivity.this, Lang.t("已保存，改动已留痕"),
                                         Toast.LENGTH_SHORT).show();
                                 finish();
                             }

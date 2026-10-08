@@ -147,7 +147,7 @@ public class SettingsActivity extends Activity {
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 0, 0, 12));
         CheckBox compressBox = new CheckBox(this);
-        compressBox.setText("自动压缩旧对话");
+        compressBox.setText(Lang.t("自动压缩旧对话"));
         compressBox.setTextSize(13);
         compressBox.setTextColor(UiKit.TEXT);
         compressBox.setChecked(store.compressionOn());
@@ -254,8 +254,8 @@ public class SettingsActivity extends Activity {
         if (modelConfigStatus == null) {
             return;
         }
-        modelConfigStatus.setText("当前：" + store.activeName() + " · " + store.model()
-                + (store.apiKey().isEmpty() ? " · 未配置 key" : ""));
+        modelConfigStatus.setText(Lang.t("当前：") + store.activeName() + " · " + store.model()
+                + (store.apiKey().isEmpty() ? Lang.t(" · 未配置 key") : ""));
     }
 
     private TextView sub(String s) {

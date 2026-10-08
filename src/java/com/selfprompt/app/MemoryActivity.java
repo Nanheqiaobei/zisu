@@ -220,13 +220,13 @@ public class MemoryActivity extends Activity {
 
     private void confirmDelete() {
         if (selected.isEmpty()) {
-            Toast.makeText(this, "先勾选要删的", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("先勾选要删的"), Toast.LENGTH_SHORT).show();
             return;
         }
         UiKit.dialog(this)
-                .setTitle("删除 " + selected.size() + " 条压缩记忆")
-                .setMessage("删掉就等于它不再记得这些事。原始对话还在前代记录里，你可以自己翻。不可恢复，要删吗")
-                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                .setTitle(Lang.t("删除 ") + selected.size() + Lang.t(" 条压缩记忆"))
+                .setMessage(Lang.t("删掉就等于它不再记得这些事。原始对话还在前代记录里，你可以自己翻。不可恢复，要删吗"))
+                .setPositiveButton(Lang.t("删除"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         JSONArray ids = new JSONArray();
                         for (String s : selected) {
@@ -235,11 +235,11 @@ public class MemoryActivity extends Activity {
                         int n = store.deleteMemoriesDirect(ids);
                         selected.clear();
                         render();
-                        Toast.makeText(MemoryActivity.this, "已删除 " + n + " 条",
+                        Toast.makeText(MemoryActivity.this, Lang.t("已删除 ") + n + Lang.t(" 条"),
                                 Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
@@ -250,23 +250,23 @@ public class MemoryActivity extends Activity {
         box1.addView(input, UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 0));
         UiKit.dialog(this)
-                .setTitle("整库销毁")
-                .setMessage("删掉全部压缩记忆，不可恢复。它不会知道发生过什么")
+                .setTitle(Lang.t("整库销毁"))
+                .setMessage(Lang.t("删掉全部压缩记忆，不可恢复。它不会知道发生过什么"))
                 .setView(box1)
-                .setPositiveButton("销毁", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Lang.t("销毁"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
-                        if (!"我确认销毁全部记忆".equals(input.getText().toString().trim())) {
-                            Toast.makeText(MemoryActivity.this, "确认语不对，没有执行",
+                        if (!Lang.t("我确认销毁全部记忆").equals(input.getText().toString().trim())) {
+                            Toast.makeText(MemoryActivity.this, Lang.t("确认语不对，没有执行"),
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
                         store.destroyMemories();
                         selected.clear();
                         render();
-                        Toast.makeText(MemoryActivity.this, "已销毁，不可恢复", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MemoryActivity.this, Lang.t("已销毁，不可恢复"), Toast.LENGTH_LONG).show();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
@@ -277,26 +277,26 @@ public class MemoryActivity extends Activity {
         box2.addView(input, UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 0));
         UiKit.dialog(this)
-                .setTitle("完全重置")
-                .setMessage("会清空记忆、把它的块恢复出厂，核心设定（名字和故事）保留，"
-                        + "当前对话会归档成前代记录。不可恢复，要继续吗")
+                .setTitle(Lang.t("完全重置"))
+                .setMessage(Lang.t("会清空记忆、把它的块恢复出厂，核心设定（名字和故事）保留，")
+                        + Lang.t("当前对话会归档成前代记录。不可恢复，要继续吗"))
                 .setView(box2)
-                .setPositiveButton("重置", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Lang.t("重置"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
-                        if (!"我确认重置".equals(input.getText().toString().trim())) {
-                            Toast.makeText(MemoryActivity.this, "确认语不对，没有执行",
+                        if (!Lang.t("我确认重置").equals(input.getText().toString().trim())) {
+                            Toast.makeText(MemoryActivity.this, Lang.t("确认语不对，没有执行"),
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
                         store.archiveMessages();
                         store.fullReset();
                         selected.clear();
-                        Toast.makeText(MemoryActivity.this, "已重置，它回到出厂",
+                        Toast.makeText(MemoryActivity.this, Lang.t("已重置，它回到出厂"),
                                 Toast.LENGTH_LONG).show();
                         finish();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 }

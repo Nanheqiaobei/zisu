@@ -61,7 +61,7 @@ public class ToolsActivity extends Activity {
             head.addView(UiKit.label(this, info.name, 15, UiKit.TEXT, true, Gravity.START),
                     new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
             final CheckBox box = new CheckBox(this);
-            box.setText("启用");
+            box.setText(Lang.t("启用"));
             box.setTextSize(13);
             box.setTextColor(UiKit.TEXT);
             box.setChecked(store.toolEnabled(info.id));
@@ -69,8 +69,8 @@ public class ToolsActivity extends Activity {
                 public void onClick(View v) {
                     store.setToolEnabled(info.id, box.isChecked());
                     Toast.makeText(ToolsActivity.this,
-                            box.isChecked() ? ("已打开「" + info.name + "」")
-                                    : ("已关掉「" + info.name + "」"),
+                            box.isChecked() ? (Lang.t("已打开「") + info.name + "」")
+                                    : (Lang.t("已关掉「") + info.name + "」"),
                             Toast.LENGTH_SHORT).show();
                 }
             });
@@ -98,7 +98,7 @@ public class ToolsActivity extends Activity {
         autoHead.addView(UiKit.label(this, "每几轮自动看一眼", 15, UiKit.TEXT, true, Gravity.START),
                 new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         final CheckBox autoBox = new CheckBox(this);
-        autoBox.setText("启用");
+        autoBox.setText(Lang.t("启用"));
         autoBox.setTextSize(13);
         autoBox.setTextColor(UiKit.TEXT);
         autoBox.setChecked(store.selfAutoOn());
@@ -106,7 +106,7 @@ public class ToolsActivity extends Activity {
             public void onClick(View v) {
                 store.setSelfAutoOn(autoBox.isChecked());
                 Toast.makeText(ToolsActivity.this,
-                        autoBox.isChecked() ? "已打开自动调整" : "已关掉自动调整",
+                        autoBox.isChecked() ? Lang.t("已打开自动调整") : Lang.t("已关掉自动调整"),
                         Toast.LENGTH_SHORT).show();
             }
         });

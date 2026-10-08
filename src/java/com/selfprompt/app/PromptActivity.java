@@ -124,37 +124,37 @@ public class PromptActivity extends Activity {
 
     private void confirmRestore() {
         UiKit.dialog(this)
-                .setTitle("恢复默认提示词")
-                .setMessage("当前这一版会被出厂设定替换，旧版本仍在历史里，随时能回滚。要继续吗")
-                .setPositiveButton("恢复", new DialogInterface.OnClickListener() {
+                .setTitle(Lang.t("恢复默认提示词"))
+                .setMessage(Lang.t("当前这一版会被出厂设定替换，旧版本仍在历史里，随时能回滚。要继续吗"))
+                .setPositiveButton(Lang.t("恢复"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.restoreDefaultSelf();
                         expanded.clear();
                         render();
-                        Toast.makeText(PromptActivity.this, "已恢复出厂设定",
+                        Toast.makeText(PromptActivity.this, Lang.t("已恢复出厂设定"),
                                 Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
     /** 恢复通用模板：名字和设定一起换成中性版，去掉作者出厂角色的痕迹 */
     private void confirmRestoreGeneric() {
         UiKit.dialog(this)
-                .setTitle("恢复通用模板")
-                .setMessage("名字会变成「" + Store.DEF_NAME_GENERIC + "」，设定换成一个中性的通用起点，"
-                        + "不含任何特定角色。当前版本仍在历史里，随时能回滚。要继续吗")
-                .setPositiveButton("恢复", new DialogInterface.OnClickListener() {
+                .setTitle(Lang.t("恢复通用模板"))
+                .setMessage(Lang.t("名字会变成「") + Store.DEF_NAME_GENERIC + Lang.t("」，设定换成一个中性的通用起点，")
+                        + Lang.t("不含任何特定角色。当前版本仍在历史里，随时能回滚。要继续吗"))
+                .setPositiveButton(Lang.t("恢复"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.restoreGenericSelf();
                         expanded.clear();
                         render();
-                        Toast.makeText(PromptActivity.this, "已恢复通用模板",
+                        Toast.makeText(PromptActivity.this, Lang.t("已恢复通用模板"),
                                 Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
@@ -344,7 +344,7 @@ public class PromptActivity extends Activity {
                                         store.rollbackBlocksTo(index);
                                         expanded.clear();
                                         render();
-                                        Toast.makeText(PromptActivity.this, "已回滚",
+                                        Toast.makeText(PromptActivity.this, Lang.t("已回滚"),
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 }),
@@ -406,21 +406,21 @@ public class PromptActivity extends Activity {
     private void confirmClean() {
         int n = store.aiVersions().length();
         if (n <= 1) {
-            Toast.makeText(this, "只有当前这一版，不用清理", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("只有当前这一版，不用清理"), Toast.LENGTH_SHORT).show();
             return;
         }
         UiKit.dialog(this)
-                .setTitle("清理旧版本")
-                .setMessage("会删掉除当前版本以外的 " + (n - 1) + " 个历史快照，当前的块不受影响。要继续吗")
-                .setPositiveButton("清理", new DialogInterface.OnClickListener() {
+                .setTitle(Lang.t("清理旧版本"))
+                .setMessage(Lang.t("会删掉除当前版本以外的 ") + (n - 1) + Lang.t(" 个历史快照，当前的块不受影响。要继续吗"))
+                .setPositiveButton(Lang.t("清理"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.keepOnlyCurrentAiVersion();
                         expanded.clear();
                         render();
-                        Toast.makeText(PromptActivity.this, "已清理", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PromptActivity.this, Lang.t("已清理"), Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 }

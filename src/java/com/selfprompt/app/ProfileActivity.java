@@ -95,8 +95,8 @@ public class ProfileActivity extends Activity {
                                 } else {
                                     store.setAiAvatar("");
                                 }
-                                avatarStatus.setText("没有自定义头像，用首字");
-                                Toast.makeText(ProfileActivity.this, "已清除，回对话页生效",
+                                avatarStatus.setText(Lang.t("没有自定义头像，用首字"));
+                                Toast.makeText(ProfileActivity.this, Lang.t("已清除，回对话页生效"),
                                         Toast.LENGTH_SHORT).show();
                             }
                         }),
@@ -135,7 +135,7 @@ public class ProfileActivity extends Activity {
                                 public void onClick(View v) {
                                     store.setUserName(nameField.getText().toString());
                                     store.setUserDesc(descField.getText().toString());
-                                    Toast.makeText(ProfileActivity.this, "已保存", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ProfileActivity.this, Lang.t("已保存"), Toast.LENGTH_SHORT).show();
                                     finish();
                                 }
                             }),
@@ -178,7 +178,7 @@ public class ProfileActivity extends Activity {
         try {
             startActivityForResult(i, REQ_AVATAR);
         } catch (Exception e) {
-            Toast.makeText(this, "没有可用的图片选择器", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("没有可用的图片选择器"), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -216,7 +216,7 @@ public class ProfileActivity extends Activity {
                 crop.putExtra(CropActivity.EXTRA_DST, out.getAbsolutePath());
                 startActivityForResult(crop, REQ_CROP);
             } catch (Exception e) {
-                Toast.makeText(this, "读图失败：" + e.getClass().getSimpleName(),
+                Toast.makeText(this, Lang.t("读图失败：") + e.getClass().getSimpleName(),
                         Toast.LENGTH_SHORT).show();
             }
             return;
@@ -231,7 +231,7 @@ public class ProfileActivity extends Activity {
             } else {
                 store.setAiAvatar(path);
             }
-            Toast.makeText(this, "换好了，回对话页生效", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("换好了，回对话页生效"), Toast.LENGTH_SHORT).show();
             recreate();
         }
     }

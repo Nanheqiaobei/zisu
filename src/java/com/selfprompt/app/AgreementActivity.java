@@ -199,7 +199,7 @@ public class AgreementActivity extends Activity {
             return;
         }
         if (agreeBtn != null) {
-            agreeBtn.setText(Lang.isEn() ? ("Please read " + left + "s") : ("请阅读协议 " + left + " 秒"));
+            agreeBtn.setText(Lang.isEn() ? ("Please read " + left + "s") : (Lang.t("请阅读协议 ") + left + Lang.t(" 秒")));
         }
         ui.postDelayed(new Runnable() {
             public void run() {

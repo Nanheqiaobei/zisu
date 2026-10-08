@@ -126,7 +126,7 @@ public class ArchiveActivity extends Activity {
                     if (m == null) {
                         continue;
                     }
-                    sb.append("user".equals(m.optString("role", "")) ? "你：" : "它：")
+                    sb.append("user".equals(m.optString("role", "")) ? Lang.t("你：") : Lang.t("它："))
                       .append(m.optString("content", "")).append("\n\n");
                 }
                 TextView t = UiKit.label(this, sb.toString().trim(), 12.5f, UiKit.TEXT, false, Gravity.START);
@@ -149,17 +149,17 @@ public class ArchiveActivity extends Activity {
 
     private void confirmDelete(final int index) {
         UiKit.dialog(this)
-                .setTitle("删掉这段记录")
-                .setMessage("这段前代记录会被永久删除，不可恢复")
-                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                .setTitle(Lang.t("删掉这段记录"))
+                .setMessage(Lang.t("这段前代记录会被永久删除，不可恢复"))
+                .setPositiveButton(Lang.t("删除"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.deleteArchiveAt(index);
                         open.clear();
                         render();
-                        Toast.makeText(ArchiveActivity.this, "已删除", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ArchiveActivity.this, Lang.t("已删除"), Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 }

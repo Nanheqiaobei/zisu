@@ -176,7 +176,7 @@ public class DataActivity extends Activity {
         try {
             startActivityForResult(i, REQ_EXPORT);
         } catch (Exception e) {
-            Toast.makeText(this, "这台机器没有可用的文件保存入口", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("这台机器没有可用的文件保存入口"), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -193,7 +193,7 @@ public class DataActivity extends Activity {
             JSONObject data = store.exportData(pendingExportType);
             OutputStream os = getContentResolver().openOutputStream(uri);
             if (os == null) {
-                throw new Exception("打不开目标文件");
+                throw new Exception(Lang.t("打不开目标文件"));
             }
             zos = new ZipOutputStream(os);
             zos.putNextEntry(new ZipEntry("data.json"));
@@ -224,9 +224,9 @@ public class DataActivity extends Activity {
             zos.finish();
             zos.close();
             zos = null;
-            Toast.makeText(this, "已导出（含 " + count + " 个文件）", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("已导出（含 ") + count + Lang.t(" 个文件）"), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            Toast.makeText(this, "导出失败：" + e.getClass().getSimpleName(),
+            Toast.makeText(this, Lang.t("导出失败：") + e.getClass().getSimpleName(),
                     Toast.LENGTH_SHORT).show();
         } finally {
             if (zos != null) {
@@ -271,15 +271,15 @@ public class DataActivity extends Activity {
 
     private void confirmImport() {
         UiKit.dialog(this)
-                .setTitle("数据还原")
-                .setMessage("选一份备份文件恢复。文件里若是全部数据，会把当前数据整个换成它；"
-                        + "若是单类（配置 / 角色），只覆盖对应那一类。不可撤销，要继续吗")
-                .setPositiveButton("去选文件", new DialogInterface.OnClickListener() {
+                .setTitle(Lang.t("数据还原"))
+                .setMessage(Lang.t("选一份备份文件恢复。文件里若是全部数据，会把当前数据整个换成它；")
+                        + Lang.t("若是单类（配置 / 角色），只覆盖对应那一类。不可撤销，要继续吗"))
+                .setPositiveButton(Lang.t("去选文件"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         pickImport();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
@@ -290,7 +290,7 @@ public class DataActivity extends Activity {
         try {
             startActivityForResult(i, REQ_IMPORT);
         } catch (Exception e) {
-            Toast.makeText(this, "这台机器没有可用的文件选择入口", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("这台机器没有可用的文件选择入口"), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -298,7 +298,7 @@ public class DataActivity extends Activity {
         try {
             InputStream is = getContentResolver().openInputStream(uri);
             if (is == null) {
-                throw new Exception("打不开这个文件");
+                throw new Exception(Lang.t("打不开这个文件"));
             }
             ZipInputStream zis = new ZipInputStream(is);
             final JSONObject data = new JSONObject();
@@ -333,7 +333,7 @@ public class DataActivity extends Activity {
             }
             zis.close();
             if (!hasData) {
-                Toast.makeText(this, "这不是自塑导出的文件", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, Lang.t("这不是自塑导出的文件"), Toast.LENGTH_SHORT).show();
                 return;
             }
             String type = data.optString("type", Store.EXPORT_FULL);
@@ -343,18 +343,18 @@ public class DataActivity extends Activity {
             final List<String> fNames = names;
             final List<byte[]> fBlobs = blobs;
             UiKit.dialog(this)
-                    .setTitle("确认还原")
-                    .setMessage("这份文件是「" + tName + "」类，含 " + names.size()
-                            + " 个文件，将覆盖对应的数据。确定写入吗")
-                    .setPositiveButton("还原", new DialogInterface.OnClickListener() {
+                    .setTitle(Lang.t("确认还原"))
+                    .setMessage(Lang.t("这份文件是「") + tName + Lang.t("」类，含 ") + names.size()
+                            + Lang.t(" 个文件，将覆盖对应的数据。确定写入吗"))
+                    .setPositiveButton(Lang.t("还原"), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface d, int which) {
                             applyImport(fType, data, fNames, fBlobs);
                         }
                     })
-                    .setNegativeButton("取消", null)
+                    .setNegativeButton(Lang.t("取消"), null)
                     .show();
         } catch (Exception e) {
-            Toast.makeText(this, "读取失败：" + e.getClass().getSimpleName(),
+            Toast.makeText(this, Lang.t("读取失败：") + e.getClass().getSimpleName(),
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -396,10 +396,10 @@ public class DataActivity extends Activity {
                 fos.close();
                 fc++;
             }
-            Toast.makeText(this, "已还原 " + c + " 项、" + fc + " 个文件，重启后全部生效",
+            Toast.makeText(this, Lang.t("已还原 ") + c + Lang.t(" 项、") + fc + Lang.t(" 个文件，重启后全部生效"),
                     Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            Toast.makeText(this, "还原失败：" + e.getClass().getSimpleName(),
+            Toast.makeText(this, Lang.t("还原失败：") + e.getClass().getSimpleName(),
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -421,15 +421,15 @@ public class DataActivity extends Activity {
 
     private void confirmClear() {
         UiKit.dialog(this)
-                .setTitle("清空对话记录")
-                .setMessage("对话记录会被删除，提示词版本、记忆和配置都会保留。要继续吗")
-                .setPositiveButton("清空", new DialogInterface.OnClickListener() {
+                .setTitle(Lang.t("清空对话记录"))
+                .setMessage(Lang.t("对话记录会被删除，提示词版本、记忆和配置都会保留。要继续吗"))
+                .setPositiveButton(Lang.t("清空"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.clearMessages();
-                        Toast.makeText(DataActivity.this, "已清空", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DataActivity.this, Lang.t("已清空"), Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 

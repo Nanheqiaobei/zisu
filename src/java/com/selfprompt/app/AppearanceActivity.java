@@ -429,21 +429,21 @@ public class AppearanceActivity extends Activity {
         box.addView(quick, qlp);
 
         UiKit.dialog(this)
-                .setTitle("调颜色")
+                .setTitle(Lang.t("调颜色"))
                 .setView(box)
-                .setPositiveButton("用这个", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Lang.t("用这个"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.setAccentCustom(hexLabel.getText().toString());
                         rebuildLater(true);
                     }
                 })
-                .setNeutralButton("回到预设", new DialogInterface.OnClickListener() {
+                .setNeutralButton(Lang.t("回到预设"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.setAccentCustom("");
                         rebuildLater(true);
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(Lang.t("取消"), null)
                 .show();
     }
 
@@ -530,7 +530,7 @@ public class AppearanceActivity extends Activity {
         try {
             startActivityForResult(i, REQ_BG);
         } catch (Exception e) {
-            Toast.makeText(this, "没有可用的图片选择器", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("没有可用的图片选择器"), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -550,7 +550,7 @@ public class AppearanceActivity extends Activity {
                         0f, this, 0, 0, 0, 12));
 
         CheckBox box = new CheckBox(this);
-        box.setText("磨砂玻璃 UI");
+        box.setText(Lang.t("磨砂玻璃 UI"));
         box.setTextSize(13);
         box.setTextColor(UiKit.TEXT);
         box.setChecked(store.frosted());
@@ -597,7 +597,7 @@ public class AppearanceActivity extends Activity {
                         0f, this, 0, 0, 0, 12));
 
         CheckBox box = new CheckBox(this);
-        box.setText("开启动效");
+        box.setText(Lang.t("开启动效"));
         box.setTextSize(13);
         box.setTextColor(UiKit.TEXT);
         box.setChecked(store.animOn());
@@ -627,7 +627,7 @@ public class AppearanceActivity extends Activity {
                         0f, this, 0, 0, 0, 12));
 
         CheckBox box = new CheckBox(this);
-        box.setText("开启开屏动画");
+        box.setText(Lang.t("开启开屏动画"));
         box.setTextSize(13);
         box.setTextColor(UiKit.TEXT);
         box.setChecked(store.splashOn());
@@ -672,7 +672,7 @@ public class AppearanceActivity extends Activity {
                             public void onClick(View v) {
                                 store.setFontPath("");
                                 UiKit.loadFont("");
-                                Toast.makeText(AppearanceActivity.this, "已恢复默认字体",
+                                Toast.makeText(AppearanceActivity.this, Lang.t("已恢复默认字体"),
                                         Toast.LENGTH_SHORT).show();
                                 rebuildLater(true);
                             }
@@ -690,7 +690,7 @@ public class AppearanceActivity extends Activity {
         try {
             startActivityForResult(i, REQ_FONT);
         } catch (Exception e) {
-            Toast.makeText(this, "没有可用的文件选择器", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("没有可用的文件选择器"), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -726,10 +726,10 @@ public class AppearanceActivity extends Activity {
             }
             fos.close();
             store.setBgPath(out.getAbsolutePath());
-            Toast.makeText(this, "已换成这张背景", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("已换成这张背景"), Toast.LENGTH_SHORT).show();
             rebuildLater(true);
         } catch (Exception e) {
-            Toast.makeText(this, "读图片失败：" + e.getClass().getSimpleName(),
+            Toast.makeText(this, Lang.t("读图片失败：") + e.getClass().getSimpleName(),
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -756,14 +756,14 @@ public class AppearanceActivity extends Activity {
             UiKit.loadFont(out.getAbsolutePath());
             if (!UiKit.hasCustomFont()) {
                 store.setFontPath("");
-                Toast.makeText(this, "这个文件读不出字体，换一个 ttf 或 otf 试试",
+                Toast.makeText(this, Lang.t("这个文件读不出字体，换一个 ttf 或 otf 试试"),
                         Toast.LENGTH_LONG).show();
                 return;
             }
-            Toast.makeText(this, "已换字体", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Lang.t("已换字体"), Toast.LENGTH_SHORT).show();
             rebuildLater(true);
         } catch (Exception e) {
-            Toast.makeText(this, "读字体失败：" + e.getClass().getSimpleName(),
+            Toast.makeText(this, Lang.t("读字体失败：") + e.getClass().getSimpleName(),
                     Toast.LENGTH_SHORT).show();
         }
     }

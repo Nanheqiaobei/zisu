@@ -31,11 +31,25 @@ ZIPALIGN="${ZIPALIGN:-/root/bin/zipalign}"
 JAVA="${JAVA:-java}"
 VERSION_CODE="${VERSION_CODE:-50}"
 VERSION_NAME="${VERSION_NAME:-0.50}"
-KEYSTORE="${KEYSTORE:-$APP/debug.keystore}"
-KS_PASS="${KS_PASS:-android}"
-KEY_ALIAS="${KEY_ALIAS:-androiddebugkey}"
-KEY_PASS="${KEY_PASS:-android}"
 OUT=$APP/out
+
+# 签名密钥：默认优先用 release 密钥（放在仓库之外，不进版本库），找不到才退回 debug
+RELEASE_KS="${RELEASE_KS:-/root/keystore/zisu-release.jks}"
+if [ -z "$KEYSTORE" ]; then
+  if [ -f "$RELEASE_KS" ]; then
+    KEYSTORE="$RELEASE_KS"
+    KS_PASS="${KS_PASS:-$(cat /root/keystore/password.txt 2>/dev/null)}"
+    KEY_ALIAS="${KEY_ALIAS:-zisu}"
+    KEY_PASS="${KEY_PASS:-$KS_PASS}"
+    echo "签名：使用 release 密钥 $KEYSTORE"
+  else
+    KEYSTORE="$APP/debug.keystore"
+    KS_PASS="${KS_PASS:-android}"
+    KEY_ALIAS="${KEY_ALIAS:-androiddebugkey}"
+    KEY_PASS="${KEY_PASS:-android}"
+    echo "签名：未找到 release 密钥，退回 debug"
+  fi
+fi
 
 rm -rf $OUT
 mkdir -p $OUT/res $OUT/gen $OUT/classes $OUT/dex
@@ -62,6 +76,6 @@ echo "[6/6] sign"
 $JAVA -jar $BT/lib/apksigner.jar sign \
   --ks $KEYSTORE --ks-pass pass:$KS_PASS --key-pass pass:$KEY_PASS \
   --ks-key-alias $KEY_ALIAS --v1-signing-enabled true --v2-signing-enabled true \
-  --out $APP/自塑-debug.apk $OUT/app-aligned.apk || { echo FAIL7; exit 17; }
+  --out $APP/自塑.apk $OUT/app-aligned.apk || { echo FAIL7; exit 17; }
 echo "BUILD OK"
 ls -la $APP/*.apk

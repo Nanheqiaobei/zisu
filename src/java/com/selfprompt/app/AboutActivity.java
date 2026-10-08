@@ -134,6 +134,12 @@ public class AboutActivity extends Activity {
                             ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 10));
         }
 
+        box.addView(UiKit.label(this,
+                        "本软件在 Operit AI 提供的工具支持下完成开发，代码编写与排查由 DeepSeek 模型辅助",
+                        11, UiKit.TEXT_SUB, false, Gravity.START),
+                UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                        0f, this, 0, 0, 0, 12));
+
         box.addView(UiKit.outlineButton(this, "项目主页　github.com/Nanheqiaobei/zisu",
                         UiKit.ACCENT, 0x552F6FED, 10,
                         new View.OnClickListener() {

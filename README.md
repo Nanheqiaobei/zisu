@@ -12,9 +12,10 @@
 
 ## 下载安装
 
-直接下载仓库根目录下的 [`自塑.apk`](自塑.apk) 安装即可。
+前往 [**Releases**](https://github.com/Nanheqiaobei/zisu/releases/latest) 页面，下载最新版的 `zisu-x.yy.apk` 安装即可。
 
 - 最低支持 Android 7.0（API 24）
+- 若装过旧版，请先卸载（签名由 debug 换为 release，两者不兼容），这一步仅需一次
 - 首次启动会显示用户协议与隐私政策，需停留数秒后方可同意
 - 安装前请在系统设置里允许「安装未知来源应用」
 
@@ -51,8 +52,8 @@ bash build.sh
 | `AAPT2` | aapt2 可执行文件 | `/root/bin/aapt2` |
 | `ZIPALIGN` | zipalign 可执行文件 | `/root/bin/zipalign` |
 | `JAVA` | java 命令 | `java` |
-| `VERSION_CODE` | 版本号（整数） | `48` |
-| `VERSION_NAME` | 版本名 | `0.48` |
+| `VERSION_CODE` | 版本号（整数） | `55` |
+| `VERSION_NAME` | 版本名 | `0.55` |
 | `KEYSTORE` | 签名用 keystore | `$APP_DIR/debug.keystore` |
 | `KS_PASS` / `KEY_ALIAS` / `KEY_PASS` | keystore 口令、别名、别名口令 | `android` / `androiddebugkey` / `android` |
 

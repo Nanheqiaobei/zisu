@@ -272,8 +272,7 @@ public class DataActivity extends Activity {
     private void confirmImport() {
         UiKit.dialog(this)
                 .setTitle(Lang.t("数据还原"))
-                .setMessage(Lang.t("选一份备份文件恢复。文件里若是全部数据，会把当前数据整个换成它；")
-                        + Lang.t("若是单类（配置 / 角色），只覆盖对应那一类。不可撤销，要继续吗"))
+                .setMessage(Lang.t("选一份备份文件恢复。文件里若是全部数据，会把当前数据整个换成它；若是单类（配置 / 角色），只覆盖对应那一类。不可撤销，要继续吗"))
                 .setPositiveButton(Lang.t("去选文件"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         pickImport();

@@ -945,7 +945,8 @@ public class MainActivity extends Activity {
         }
         String lastDay = null;
         java.text.SimpleDateFormat dayFmt =
-                new java.text.SimpleDateFormat("yyyy-MM-dd EEEE", java.util.Locale.CHINA);
+                new java.text.SimpleDateFormat("yyyy-MM-dd EEEE",
+                        Lang.isEn() ? java.util.Locale.US : java.util.Locale.CHINA);
         for (int i = 0; i < history.length(); i++) {
             JSONObject m = history.optJSONObject(i);
             if (m == null) {
@@ -1115,7 +1116,7 @@ public class MainActivity extends Activity {
     /** 长按自己发的消息：重新编辑、复制、删除 */
     private void showMessageMenu(final int index) {
         UiKit.dialog(this)
-                .setItems(new String[]{"重新编辑（撤回这条及之后的）", "复制这条", "删除这条及之后的"},
+                .setItems(new String[]{Lang.t("重新编辑（撤回这条及之后的）"), Lang.t("复制这条"), Lang.t("删除这条及之后的")},
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface d, int which) {
                                 if (which == 0) {
@@ -1174,7 +1175,7 @@ public class MainActivity extends Activity {
         input.setText(text);
         input.setSelection(text.length());
         input.requestFocus();
-        addNote("已撤回这条及之后的 " + (oldLen - index) + " 条消息，内容放回输入框，改完再发");
+        addNote(Lang.t("已撤回这条及之后的 ") + (oldLen - index) + Lang.t(" 条消息，内容放回输入框，改完再发"));
     }
 
     private void deleteFrom(int index) {
@@ -1186,7 +1187,7 @@ public class MainActivity extends Activity {
         history = trunc;
         store.setMessages(history);
         renderAll();
-        addNote("已删除这条及之后的 " + (oldLen - index) + " 条消息");
+        addNote(Lang.t("已删除这条及之后的 ") + (oldLen - index) + Lang.t(" 条消息"));
     }
 
     private void copyMessage(int index) {
@@ -1246,7 +1247,7 @@ public class MainActivity extends Activity {
     private void pickAttach() {
         UiKit.dialog(this)
                 .setTitle(Lang.t("添加附件"))
-                .setItems(new String[]{"图片", "文件"}, new DialogInterface.OnClickListener() {
+                .setItems(new String[]{Lang.t("图片"), Lang.t("文件")}, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         openPicker(which == 0);
                     }
@@ -1842,7 +1843,7 @@ public class MainActivity extends Activity {
         }
         if (error != null) {
             renderSegments("", thinkBuf == null ? null : thinkBuf.toString());
-            addNote("请求失败：" + error);
+            addNote(Lang.t("请求失败：") + error);
             finishTurn();
             return;
         }
@@ -1995,14 +1996,14 @@ public class MainActivity extends Activity {
             boolean same = !key.isEmpty() && key.equals(lastSelfAsk);
             if (tooSoon || same) {
                 // 连着提同一件事：不再跑一遍，给它一条系统消息把路堵上
-                toolStripDone("它又提了一次同样的修改，先按住了（" + (SELF_COOLDOWN_MS / 1000)
-                        + " 秒内不重复改）", true);
+                toolStripDone(Lang.t("它又提了一次同样的修改，先按住了（") + (SELF_COOLDOWN_MS / 1000)
+                        + Lang.t(" 秒内不重复改）"), true);
                 appendSysNote("【系统】你刚才的修改请求已经处理过了，结果已经写进设定和版本历史。"
                         + "同一件事不要连着提第二次，等对方说话。");
                 return;
             }
             lastSelfAsk = key;
-            showToolStrip("它在评估要不要改自己的设定…它给的理由：" + r);
+            showToolStrip(Lang.t("它在评估要不要改自己的设定…它给的理由：") + r);
             runSelfModify(r, h);
             return;
         }
@@ -2150,7 +2151,7 @@ public class MainActivity extends Activity {
         selfModifying = false;
         refreshSendBtn();
         if (error != null) {
-            toolStripDone("设定这一轮没跑成：" + error, true);
+            toolStripDone(Lang.t("设定这一轮没跑成：") + error, true);
             appendSysNote("【系统】你刚才提请的修改没跑成（" + error + "）。这一轮不要再提，等对方说话。");
             return;
         }
@@ -2252,7 +2253,7 @@ public class MainActivity extends Activity {
         refreshSendBtn();
         store.setSelfText(body, reason);
         refreshChip();
-        toolStripDone("设定已更新，理由：" + reason, false);
+        toolStripDone(Lang.t("设定已更新，理由：") + reason, false);
         appendSysNote("【系统】刚才那份修改方案，使用者确认了，已经写进设定（理由：" + reason + "），"
                 + "现在生效的就是新版。同一件事不要重复提。");
     }
@@ -2381,7 +2382,7 @@ public class MainActivity extends Activity {
 
         compressing = true;
         refreshSendBtn();
-        showToolStrip("对话超过 " + COMPRESS_TRIGGER + " 条，正在把最老的 " + cut + " 条压成日志…");
+        showToolStrip(Lang.t("对话超过 ") + COMPRESS_TRIGGER + Lang.t(" 条，正在把最老的 ") + cut + Lang.t(" 条压成日志…"));
         final int token = ++compressToken;
         final StringBuilder out = new StringBuilder();
         final int idx = store.pickProfile(Store.FN_COMPRESS);
@@ -2420,7 +2421,7 @@ public class MainActivity extends Activity {
         compressing = false;
         refreshSendBtn();
         if (error != null) {
-            toolStripDone("压缩失败：" + error + "，对话先不动", true);
+            toolStripDone(Lang.t("压缩失败：") + error + Lang.t("，对话先不动"), true);
             return;
         }
         int added = 0;
@@ -2443,7 +2444,7 @@ public class MainActivity extends Activity {
         store.archiveCompressed(cut);
         history = store.messages();
         renderAll();
-        toolStripDone("已把最老的 " + cut + " 条对话压成 " + added + " 条日志", false);
+        toolStripDone(Lang.t("已把最老的 ") + cut + Lang.t(" 条对话压成 ") + added + Lang.t(" 条日志"), false);
     }
 
     private JSONArray buildRequest() {

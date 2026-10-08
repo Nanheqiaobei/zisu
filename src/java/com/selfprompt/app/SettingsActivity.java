@@ -86,7 +86,7 @@ public class SettingsActivity extends Activity {
                         12.5f, UiKit.TEXT_SUB, false, Gravity.START),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 0, 0, 12));
-        chat.addView(sub("当前聊天方式：" + (store.chatMode() == Store.CHAT_BUBBLE
+        chat.addView(sub(Lang.t("当前聊天方式：") + (store.chatMode() == Store.CHAT_BUBBLE
                         ? "气泡分段式" : "普通式")),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 0, 0, 12));
@@ -116,9 +116,9 @@ public class SettingsActivity extends Activity {
         LinearLayout lookRow = UiKit.row(this);
         lookRow.setGravity(Gravity.CENTER_VERTICAL);
         lookRow.addView(UiKit.dot(this, UiKit.ACCENT, 16));
-        lookRow.addView(UiKit.label(this, "当前强调色 " + Store.hexOf(UiKit.ACCENT)
-                                + (store.frosted() ? "　磨砂玻璃 · 开" : "")
-                                + (store.bgPath().isEmpty() ? "" : "　有背景图"),
+        lookRow.addView(UiKit.label(this, Lang.t("当前强调色 ") + Store.hexOf(UiKit.ACCENT)
+                                + (store.frosted() ? Lang.t("　磨砂玻璃 · 开") : "")
+                                + (store.bgPath().isEmpty() ? "" : Lang.t("　有背景图")),
                         12.5f, UiKit.TEXT_SUB, false, Gravity.START),
                 UiKit.lp(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f, this, 10, 0, 0, 0));
         look.addView(lookRow, UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,

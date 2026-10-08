@@ -109,7 +109,7 @@ public class ChatClient {
                     if (delivered.get()) {
                         return;
                     }
-                    timeoutMsg[0] = "请求超时（" + (WATCHDOG_MS / 1000) + " 秒没有任何响应，已断开）";
+                    timeoutMsg[0] = Lang.t("请求超时（") + (WATCHDOG_MS / 1000) + Lang.t(" 秒没有任何响应，已断开）");
                     cancelled = true;
                     try {
                         liveConn.disconnect();

@@ -221,7 +221,7 @@ public class AppearanceActivity extends Activity {
         LinearLayout crow = UiKit.row(this);
         crow.setGravity(Gravity.CENTER_VERTICAL);
         crow.addView(UiKit.dot(this, custom ? UiKit.ACCENT : UiKit.CHIP_BG, 20));
-        crow.addView(UiKit.label(this, custom ? ("自定义 " + cu) : "自定义颜色搭配", 14,
+        crow.addView(UiKit.label(this, custom ? (Lang.t("自定义 ") + cu) : "自定义颜色搭配", 14,
                         UiKit.TEXT, custom, Gravity.START),
                 UiKit.lp(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f, this, 12, 0, 0, 0));
         crow.addView(UiKit.smallButton(this, "调配", UiKit.ACCENT, UiKit.ACCENT_SOFT, 10,
@@ -471,7 +471,7 @@ public class AppearanceActivity extends Activity {
 
         String p = store.bgPath();
         card.addView(UiKit.label(this, p.isEmpty() ? "当前：没有设置背景图"
-                        : ("当前：" + new java.io.File(p).getName()),
+                        : (Lang.t("当前：") + new java.io.File(p).getName()),
                         12.5f, UiKit.TEXT_SUB, false, Gravity.START),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 0, 0, 12));
@@ -655,7 +655,7 @@ public class AppearanceActivity extends Activity {
                         0f, this, 0, 0, 0, 10));
         card.addView(UiKit.label(this, store.fontPath().isEmpty()
                         ? "当前：系统默认字体"
-                        : "当前：" + new java.io.File(store.fontPath()).getName(),
+                        : Lang.t("当前：") + new java.io.File(store.fontPath()).getName(),
                         12.5f, UiKit.TEXT_SUB, false, Gravity.START),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 0, 0, 12));

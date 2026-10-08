@@ -29,8 +29,8 @@ JAR=$SDK/platforms/$PLATFORM/android.jar
 AAPT2="${AAPT2:-/root/bin/aapt2}"
 ZIPALIGN="${ZIPALIGN:-/root/bin/zipalign}"
 JAVA="${JAVA:-java}"
-VERSION_CODE="${VERSION_CODE:-54}"
-VERSION_NAME="${VERSION_NAME:-0.54}"
+VERSION_CODE="${VERSION_CODE:-55}"
+VERSION_NAME="${VERSION_NAME:-0.55}"
 OUT=$APP/out
 
 # 签名密钥：默认优先用 release 密钥（放在仓库之外，不进版本库），找不到才退回 debug

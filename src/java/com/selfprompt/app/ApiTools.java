@@ -52,14 +52,14 @@ public class ApiTools {
                         if (i > 0) {
                             sb.append("；");
                         }
-                        sb.append("可用 ").append(b.optString("total_balance", "-"))
+                        sb.append(Lang.t("可用 ")).append(b.optString("total_balance", "-"))
                           .append(" ").append(b.optString("currency", ""))
-                          .append("（赠送 ").append(b.optString("granted_balance", "-"))
-                          .append("，充值 ").append(b.optString("topped_up_balance", "-"))
-                          .append("）");
+                          .append(Lang.t("（赠送 ")).append(b.optString("granted_balance", "-"))
+                          .append(Lang.t("，充值 ")).append(b.optString("topped_up_balance", "-"))
+                          .append(Lang.t("）"));
                     }
                     if (!o.optBoolean("is_available", true)) {
-                        sb.append("　余额不足");
+                        sb.append(Lang.t("　余额不足"));
                     }
                     cb.onResult(sb.toString(), true);
                 } catch (Exception e) {

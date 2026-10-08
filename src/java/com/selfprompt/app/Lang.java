@@ -523,5 +523,39 @@ public class Lang {
         p(" 条对话压成 ", " messages into ");
         p(" 条日志", " log entries");
         p("默认", "Default");
+        // —— 0.55 补齐：颜色名 ——
+        p("默认蓝", "Default blue");
+        p("青", "Cyan");
+        p("绿", "Green");
+        p("紫", "Purple");
+        p("橙", "Orange");
+        p("玫红", "Rose");
+        // —— 0.55 补齐：运行时拼接片段 ——
+        p("请求超时（", "Request timed out (");
+        p(" 秒没有任何响应，已断开）", "s with no response; disconnected)");
+        p("设定这一轮没跑成：", "This round failed: ");
+        p("配置", "Profile");
+        p("配置 ", "Profile ");
+        p("跟当前配置一致（", "Same as current profile (");
+        p("）", ")");
+        p("提示词：内置默认", "Prompt: built-in default");
+        p("提示词：自定义（", "Prompt: custom (");
+        p(" 字）", " chars)");
+        p("名字 ", "Name ");
+        p("故事 ", "Story ");
+        p("空", "empty");
+        p("字", " chars");
+        p("用户回滚到 v", "Rolled back by user to v");
+        p("可用 ", "Available ");
+        p("（赠送 ", " (granted ");
+        p("，充值 ", ", topped up ");
+        p("思考强度", "Thinking effort");
+        p("已复制", "Copied");
+        p("若是单类（配置 / 角色），只覆盖对应那一类。不可撤销，要继续吗", "if a single kind (config / character), only that kind is overwritten. This cannot be undone. Continue?");
+        p("当前对话会归档成前代记录。不可恢复，要继续吗", "and archives the current chat. Irreversible — continue?");
+        // —— 0.55 补齐：工具页（界面展示，非发给模型的 schema）——
+        p("修改自己的设定", "Modify its own setting");
+        p("向系统提一个改自己设定的请求。它只提请求，不动笔；真正落笔的是它自己的元反思层方案会先弹出来问你，你点头才写进版本历史，随时能回滚。", "It asks the system to change its own setting. It only requests, never writes; the actual writing is done by its own meta-reflection layer, and the proposal pops up for your nod before it is versioned — roll back anytime.");
+        p("关掉之后，这条对话里它就不能主动提修改了。系统每几轮自动看一眼的那条路不受影响，只是它自己开不了口", "When off, it cannot raise a change request in this chat. The periodic automatic check is unaffected; it just cannot speak up itself");
     }
 }

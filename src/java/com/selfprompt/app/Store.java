@@ -292,10 +292,10 @@ public class Store {
         }
         JSONObject o = a.optJSONObject(index);
         if (o == null) {
-            return "配置";
+            return Lang.t("配置");
         }
         String n = o.optString("name", "");
-        return n.isEmpty() ? "配置 " + (index + 1) : n;
+        return n.isEmpty() ? Lang.t("配置 ") + (index + 1) : n;
     }
 
     public String activeName() {
@@ -774,7 +774,7 @@ public class Store {
     public String fnLabel(String fn) {
         int i = functionProfile(fn);
         if (i < 0 || i >= profileCount()) {
-            return "跟当前配置一致（" + activeName() + "）";
+            return Lang.t("跟当前配置一致（") + activeName() + Lang.t("）");
         }
         return profileName(i);
     }
@@ -806,9 +806,9 @@ public class Store {
 
     public String fnPromptLabel(String fn) {
         if (!fnPromptCustom(fn)) {
-            return "提示词：内置默认";
+            return Lang.t("提示词：内置默认");
         }
-        return "提示词：自定义（" + fnPrompt(fn).trim().length() + " 字）";
+        return Lang.t("提示词：自定义（") + fnPrompt(fn).trim().length() + Lang.t(" 字）");
     }
 
     public int createProfile(String name) {
@@ -957,14 +957,14 @@ public class Store {
         }
         StringBuilder sum = new StringBuilder();
         if (!nn.equals(oldName)) {
-            sum.append("名字 ").append(oldName).append(" → ").append(nn);
+            sum.append(Lang.t("名字 ")).append(oldName).append(" → ").append(nn);
         }
         if (!ns.equals(oldStory)) {
             if (sum.length() > 0) {
                 sum.append("；");
             }
-            sum.append("故事 ").append(oldStory.isEmpty() ? "空" : (oldStory.length() + "字"))
-               .append(" → ").append(ns.isEmpty() ? "空" : (ns.length() + "字"));
+            sum.append(Lang.t("故事 ")).append(oldStory.isEmpty() ? Lang.t("空") : (oldStory.length() + Lang.t("字")))
+               .append(" → ").append(ns.isEmpty() ? Lang.t("空") : (ns.length() + Lang.t("字")));
         }
         sp.edit().putString(K_CORE_NAME, nn).putString(K_CORE_STORY, ns).apply();
 
@@ -1137,7 +1137,7 @@ public class Store {
         JSONArray blocks = o.optJSONArray("blocks");
         JSONArray cur = (blocks == null) ? new JSONArray() : blocks;
         saveBlocks(cur);
-        pushVersion("用户回滚到 v" + (index + 1), "rollback", cur);
+        pushVersion(Lang.t("用户回滚到 v") + (index + 1), "rollback", cur);
     }
 
     public void keepOnlyCurrentAiVersion() {

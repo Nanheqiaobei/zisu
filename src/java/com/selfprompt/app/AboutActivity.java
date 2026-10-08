@@ -71,7 +71,7 @@ public class AboutActivity extends Activity {
         about.addView(centered("自塑", 20, UiKit.TEXT, true),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 12, 0, 0));
-        about.addView(centered("版本 " + versionName(), 12.5f, UiKit.TEXT_SUB, false),
+        about.addView(centered(Lang.t("版本 ") + versionName(), 12.5f, UiKit.TEXT_SUB, false),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 4, 0, 0));
         about.addView(centered("作者：亦安一北", 12.5f, UiKit.TEXT_SUB, false),

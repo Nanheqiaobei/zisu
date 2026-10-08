@@ -122,7 +122,7 @@ public class MemoryActivity extends Activity {
                                 render();
                             }
                         }));
-        r1.addView(UiKit.smallButton(this, "删除所选（" + selected.size() + "）",
+        r1.addView(UiKit.smallButton(this, Lang.t("删除所选（") + selected.size() + Lang.t("）"),
                         UiKit.DANGER, 0x1FC0392B, 10, new View.OnClickListener() {
                             public void onClick(View v) {
                                 confirmDelete();
@@ -154,7 +154,7 @@ public class MemoryActivity extends Activity {
         // 列表
         LinearLayout list = UiKit.column(this);
         list.setPadding(UiKit.dp(this, 16), UiKit.dp(this, 14), UiKit.dp(this, 16), UiKit.dp(this, 14));
-        list.addView(UiKit.sectionTitle(this, "压缩记忆 · 共 " + total + " 条"),
+        list.addView(UiKit.sectionTitle(this, Lang.t("压缩记忆 · 共 ") + total + Lang.t(" 条")),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 0, 0, 10));
 
@@ -278,8 +278,7 @@ public class MemoryActivity extends Activity {
                 ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 0));
         UiKit.dialog(this)
                 .setTitle(Lang.t("完全重置"))
-                .setMessage(Lang.t("会清空记忆、把它的块恢复出厂，核心设定（名字和故事）保留，")
-                        + Lang.t("当前对话会归档成前代记录。不可恢复，要继续吗"))
+                .setMessage(Lang.t("会清空记忆、把它的块恢复出厂，核心设定（名字和故事）保留，当前对话会归档成前代记录。不可恢复，要继续吗"))
                 .setView(box2)
                 .setPositiveButton(Lang.t("重置"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {

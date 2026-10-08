@@ -143,8 +143,7 @@ public class PromptActivity extends Activity {
     private void confirmRestoreGeneric() {
         UiKit.dialog(this)
                 .setTitle(Lang.t("恢复通用模板"))
-                .setMessage(Lang.t("名字会变成「") + Store.DEF_NAME_GENERIC + Lang.t("」，设定换成一个中性的通用起点，")
-                        + Lang.t("不含任何特定角色。当前版本仍在历史里，随时能回滚。要继续吗"))
+                .setMessage(Lang.t("名字会变成「") + Store.DEF_NAME_GENERIC + Lang.t("」，设定换成一个中性的通用起点，不含任何特定角色。当前版本仍在历史里，随时能回滚。要继续吗"))
                 .setPositiveButton(Lang.t("恢复"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.restoreGenericSelf();
@@ -272,7 +271,7 @@ public class PromptActivity extends Activity {
         card.setPadding(UiKit.dp(this, 18), UiKit.dp(this, 16), UiKit.dp(this, 18), UiKit.dp(this, 16));
         LinearLayout head = UiKit.row(this);
         head.setGravity(Gravity.CENTER_VERTICAL);
-        head.addView(UiKit.sectionTitle(this, "版本历史 · 共 " + n + " 版"),
+        head.addView(UiKit.sectionTitle(this, Lang.t("版本历史 · 共 ") + n + Lang.t(" 版")),
                 new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         head.addView(UiKit.smallButton(this, "清理旧版本", UiKit.DANGER, 0x1FC0392B, 10,
                 new View.OnClickListener() {
@@ -296,15 +295,15 @@ public class PromptActivity extends Activity {
             final boolean current = (i == n - 1);
             final boolean open = expanded.contains(i);
             String source = o.optString("source", "ai");
-            String src = "ai".equals(source) ? "AI 自己改" : ("rollback".equals(source) ? "你回滚"
-                    : ("migrate".equals(source) ? "旧版迁移" : "系统"));
+            String src = "ai".equals(source) ? Lang.t("AI 自己改") : ("rollback".equals(source) ? Lang.t("你回滚")
+                    : ("migrate".equals(source) ? Lang.t("旧版迁移") : Lang.t("系统")));
 
             LinearLayout item = UiKit.column(this);
             item.setPadding(UiKit.dp(this, 14), UiKit.dp(this, 12), UiKit.dp(this, 14), UiKit.dp(this, 12));
 
             LinearLayout h = UiKit.row(this);
             h.setGravity(Gravity.CENTER_VERTICAL);
-            TextView pill = UiKit.label(this, current ? ("v" + (i + 1) + " · 当前") : ("v" + (i + 1)),
+            TextView pill = UiKit.label(this, current ? ("v" + (i + 1) + Lang.t(" · 当前")) : ("v" + (i + 1)),
                     11.5f, current ? 0xFFFFFFFF : UiKit.TEXT_SUB, true, Gravity.CENTER);
             pill.setBackground(UiKit.shape(this, current ? UiKit.ACCENT : UiKit.CHIP_BG, 0, 8));
             pill.setPadding(UiKit.dp(this, 9), UiKit.dp(this, 4), UiKit.dp(this, 9), UiKit.dp(this, 4));
@@ -325,7 +324,7 @@ public class PromptActivity extends Activity {
                     }));
             item.addView(h);
 
-            item.addView(UiKit.label(this, "理由：" + o.optString("reason", ""),
+            item.addView(UiKit.label(this, Lang.t("理由：") + o.optString("reason", ""),
                             12, UiKit.NOTE_TEXT, false, Gravity.START),
                     UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 10, 0, 0));

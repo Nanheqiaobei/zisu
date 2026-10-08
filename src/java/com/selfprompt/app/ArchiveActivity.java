@@ -102,8 +102,8 @@ public class ArchiveActivity extends Activity {
             LinearLayout head = UiKit.row(this);
             head.setGravity(Gravity.CENTER_VERTICAL);
             head.addView(UiKit.label(this,
-                            ("compress".equals(o.optString("kind", "reset")) ? "压缩归档　" : "前代记录　")
-                                    + fmt.format(new Date(o.optLong("time", 0))) + "　共 " + count + " 条",
+                            (("compress".equals(o.optString("kind", "reset")) ? Lang.t("压缩归档　") : Lang.t("前代记录　"))
+                                    + fmt.format(new Date(o.optLong("time", 0))) + Lang.t("　共 ") + count + Lang.t(" 条")),
                             13, UiKit.TEXT, true, Gravity.START),
                     new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
             head.addView(UiKit.smallButton(this, isOpen ? "收起" : "展开",

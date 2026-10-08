@@ -134,6 +134,16 @@ public class AboutActivity extends Activity {
                             ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 10));
         }
 
+        box.addView(UiKit.outlineButton(this, "项目主页　github.com/Nanheqiaobei/zisu",
+                        UiKit.ACCENT, 0x552F6FED, 10,
+                        new View.OnClickListener() {
+                            public void onClick(View v) {
+                                openUrl("https://github.com/Nanheqiaobei/zisu");
+                            }
+                        }),
+                UiKit.lp(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 4, 0, 8));
+
         box.addView(UiKit.outlineButton(this, "查看 GPL-3.0 协议全文", UiKit.TEXT_SUB, UiKit.BORDER, 10,
                 new View.OnClickListener() {
                     public void onClick(View v) {
@@ -147,6 +157,15 @@ public class AboutActivity extends Activity {
 
     private TextView centered(String s, float sp, int color, boolean bold) {
         return UiKit.label(this, s, sp, color, bold, Gravity.CENTER);
+    }
+
+    /** 用浏览器打开一个链接，失败就忽略 */
+    private void openUrl(String url) {
+        try {
+            startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW,
+                    android.net.Uri.parse(url)));
+        } catch (Exception ignored) {
+        }
     }
 
     private android.graphics.drawable.Drawable appIcon() {

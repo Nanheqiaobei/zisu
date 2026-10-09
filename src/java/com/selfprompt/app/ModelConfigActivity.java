@@ -38,9 +38,10 @@ public class ModelConfigActivity extends Activity {
     private TextView modelStatus;
 
     private TextView fnSelfStatus;
-    private TextView fnCompressStatus;
     private TextView fnSelfPrompt;
-    private TextView fnCompressPrompt;
+    /** 脑区三个功能模型的提示词标签，统一刷新 */
+    private final List<TextView> fnBrainPromptViews = new ArrayList<TextView>();
+    private final List<String> fnBrainPromptKeys = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle b) {
@@ -220,31 +221,13 @@ public class ModelConfigActivity extends Activity {
         fn.addView(fnSelfPrompt, UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 16));
 
-        LinearLayout compRow = UiKit.row(this);
-        compRow.setGravity(Gravity.CENTER_VERTICAL);
-        compRow.addView(UiKit.label(this, "上下文压缩", 12.5f, UiKit.TEXT_SUB, true, Gravity.START),
-                new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        compRow.addView(UiKit.smallButton(this, "自定义提示词", UiKit.TEXT_SUB, UiKit.CHIP_BG, 10,
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        editFnPrompt(Store.FN_COMPRESS, "上下文压缩的提示词");
-                    }
-                }));
-        compRow.addView(UiKit.smallButton(this, "选择", UiKit.ACCENT, UiKit.ACCENT_SOFT, 10,
-                        new View.OnClickListener() {
-                            public void onClick(View v) {
-                                pickFunctionProfile(Store.FN_COMPRESS, fnCompressStatus);
-                            }
-                        }),
-                UiKit.lp(ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 8, 0, 0, 0));
-        fn.addView(compRow);
-        fnCompressStatus = sub(store.fnLabel(Store.FN_COMPRESS));
-        fn.addView(fnCompressStatus, UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 6, 0, 2));
-        fnCompressPrompt = sub(store.fnPromptLabel(Store.FN_COMPRESS));
-        fn.addView(fnCompressPrompt, UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 0));
+        // 脑区三个：海马体 / 前额叶 / 颞叶
+        addBrainFnBlock(fn, Store.FN_HIPPOCAMPUS, "海马体",
+                "管记忆的写入与巩固，用独立上下文把该记住的事提炼成文件写进「脑」，不受当前对话干扰", 16);
+        addBrainFnBlock(fn, Store.FN_PREFRONTAL, "前额叶",
+                "管调度与习惯，决定每轮从「脑」取哪几段放进上下文，也把反复出现的流程固化成文件", 16);
+        addBrainFnBlock(fn, Store.FN_TEMPORAL, "颞叶",
+                "管整理与轻重，把知识归类存放，给每条记忆标重要度，越重要的越常被取用", 0);
         UiKit.card(root, fn, this);
 
         root.addView(UiKit.label(this,
@@ -614,12 +597,51 @@ public class ModelConfigActivity extends Activity {
                 .show();
     }
 
+    /** 脑区功能模型的一行：名字 + 小字解释 + 自定义提示词 + 选择配置 */
+    private void addBrainFnBlock(LinearLayout parent, final String fn, String name,
+                                 String explain, int bottomDp) {
+        parent.addView(UiKit.label(this, name, 12.5f, UiKit.TEXT_SUB, true, Gravity.START),
+                UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 12, 0, 2));
+        parent.addView(UiKit.label(this, explain, 11.5f, UiKit.NOTE_TEXT, false, Gravity.START),
+                UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 6));
+        LinearLayout row = UiKit.row(this);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.addView(UiKit.label(this, Lang.t("配置"), 12, UiKit.TEXT_SUB, false, Gravity.START),
+                new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        final TextView status = sub(store.fnLabel(fn));
+        row.addView(UiKit.smallButton(this, Lang.t("自定义提示词"), UiKit.TEXT_SUB, UiKit.CHIP_BG, 10,
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        editFnPrompt(fn, Lang.t("功能模型的提示词"));
+                    }
+                }));
+        row.addView(UiKit.smallButton(this, Lang.t("选择"), UiKit.ACCENT, UiKit.ACCENT_SOFT, 10,
+                        new View.OnClickListener() {
+                            public void onClick(View v) {
+                                pickFunctionProfile(fn, status);
+                            }
+                        }),
+                UiKit.lp(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 8, 0, 0, 0));
+        parent.addView(row, UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 4));
+        parent.addView(status, UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 2));
+        TextView prompt = sub(store.fnPromptLabel(fn));
+        parent.addView(prompt, UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, bottomDp));
+        fnBrainPromptViews.add(prompt);
+        fnBrainPromptKeys.add(fn);
+    }
+
     private void refreshFnPromptLabels() {
         if (fnSelfPrompt != null) {
             fnSelfPrompt.setText(store.fnPromptLabel(Store.FN_SELF));
         }
-        if (fnCompressPrompt != null) {
-            fnCompressPrompt.setText(store.fnPromptLabel(Store.FN_COMPRESS));
+        for (int i = 0; i < fnBrainPromptViews.size(); i++) {
+            fnBrainPromptViews.get(i).setText(store.fnPromptLabel(fnBrainPromptKeys.get(i)));
         }
     }
 

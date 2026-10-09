@@ -23,7 +23,9 @@
 
 - **提示词分层**：固定底线（代码）→ 系统层（代码）→ 核心层（只有名字，人类可编辑）→ AI 自己的设定（由它自己维护）
 - **元反思层**：每几轮由 AI 回看最近对话，只在有具体、可复现的理由时提出修改方案，方案先弹给使用者确认
-- **长期记忆**：旧对话压缩成日志，是它唯一的长程记忆；可查看、可直接删、可整库销毁
+- **本地「脑」**：长期记忆全部以纯文本文件存在本地文件夹（默认 `/sdcard/塑脑`），看得见、能打开、能改；本体是只增不改的「记忆流」，各分支文件是机械生成的视图
+- **三个脑区功能模型**：海马体（从对话提炼原始信息）→ 颞叶（分类归档 + 去重）→ 前额叶（每轮调度取用），后台流水线，不挡聊天；对话到阈值自动触发，整理完自动清理上下文（保留轮数可设）
+- **上下文监测**：顶栏一个小进度条，实时显示上下文占用（绿→红），点开看已用/可用/缓存命中明细
 - **零第三方依赖**：只用 `android.*` 与系统自带的 `org.json`，不依赖 Gradle，用自建脚本一条命令出包
 - **数据本地**：不收集、不上传任何数据；API Key 只存本机
 
@@ -39,7 +41,7 @@
 bash build.sh
 ```
 
-产物为工程根目录下的 `自塑-debug.apk`。
+产物为工程根目录下的 `自塑.apk`。
 
 脚本路径都可用环境变量覆盖，不设则用本机默认值：
 
@@ -52,8 +54,8 @@ bash build.sh
 | `AAPT2` | aapt2 可执行文件 | `/root/bin/aapt2` |
 | `ZIPALIGN` | zipalign 可执行文件 | `/root/bin/zipalign` |
 | `JAVA` | java 命令 | `java` |
-| `VERSION_CODE` | 版本号（整数） | `55` |
-| `VERSION_NAME` | 版本名 | `0.55` |
+| `VERSION_CODE` | 版本号（整数） | `69` |
+| `VERSION_NAME` | 版本名 | `0.69` |
 | `KEYSTORE` | 签名用 keystore | `$APP_DIR/debug.keystore` |
 | `KS_PASS` / `KEY_ALIAS` / `KEY_PASS` | keystore 口令、别名、别名口令 | `android` / `androiddebugkey` / `android` |
 
@@ -74,7 +76,7 @@ bash build.sh
 ```
 src/
   AndroidManifest.xml
-  java/com/selfprompt/app/   25 个 Java 源文件，界面全部用代码拼，无 layout XML
+  java/com/selfprompt/app/   29 个 Java 源文件，界面全部用代码拼，无 layout XML
   res/
     anim/                    页面切换动画
     drawable/                弹窗圆角窗口背景
@@ -90,10 +92,12 @@ LICENSE                      GPL-3.0
 
 | 文件 | 职责 |
 |---|---|
-| `MainActivity` | 对话主界面 |
-| `Store` | 全部本地存储（设置、对话、记忆、提示词版本） |
+| `MainActivity` | 对话主界面、上下文监测、记忆流水线调度 |
+| `Store` | 全部本地存储（设置、对话、提示词版本、用量统计） |
+| `Brain` / `BrainActivity` | 本地「脑」文件夹管理与浏览页 |
+| `MemLog` | 记忆流（只增不改的条目数据层 + 视图生成） |
 | `UiKit` | 统一 UI 工厂（主题、颜色、卡片、弹窗、动效） |
-| `ChatClient` | 大模型接口调用 |
+| `ChatClient` | 大模型接口调用（含 usage 解析） |
 | `SystemLayer` / `SystemInfoActivity` | 系统层提示词与说明 |
 | `DataActivity` | 备份 / 还原 / 单独导出（zip） |
 | `AgreementActivity` | 首次启动的用户协议与隐私政策 |
@@ -120,6 +124,7 @@ LICENSE                      GPL-3.0
 ## 隐私
 
 - 不收集、不上传任何个人信息，不含统计、广告或跟踪组件
-- 对话内容、设置、记忆仅保存在本机应用私有目录
+- 对话内容、设置、提示词版本仅保存在本机应用私有目录
+- 长期记忆存放在本地「脑」文件夹（默认 `/sdcard/塑脑`，可在应用内修改），是纯文本文件，你随时可以打开查看或删除
 - 接口地址与 API Key 仅保存在本机，仅用于向你指定的服务发起请求
 - 对话时，你发送的内容会经网络直接发送给你所配置的第三方大模型服务商

@@ -106,7 +106,7 @@ public class DataActivity extends Activity {
                         0f, this, 0, 0, 0, 10));
         single.addView(UiKit.label(this,
                         "想把配置和角色分开带走时用这个。配置包括接口、key、外观与界面设置（含背景图与字体）；"
-                                + "角色包括它的设定与提示词、压缩记忆、前代记录、对话（含图片附件），以及功能模型的提示词",
+                                + "角色包括它的设定与提示词、脑里的记忆、前代记录、对话（含图片附件），以及功能模型的提示词",
                         12.5f, UiKit.TEXT_SUB, false, Gravity.START),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 0, 0, 14));
@@ -134,7 +134,7 @@ public class DataActivity extends Activity {
         clear.addView(UiKit.sectionTitle(this, "清空对话"),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 0, 0, 10));
-        clear.addView(UiKit.label(this, "只删当前对话，提示词版本、记忆和配置都保留",
+        clear.addView(UiKit.label(this, "只删当前对话，提示词版本、脑里的文件和配置都保留",
                         12.5f, UiKit.TEXT_SUB, false, Gravity.START),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 0, 0, 14));
@@ -421,7 +421,7 @@ public class DataActivity extends Activity {
     private void confirmClear() {
         UiKit.dialog(this)
                 .setTitle(Lang.t("清空对话记录"))
-                .setMessage(Lang.t("对话记录会被删除，提示词版本、记忆和配置都会保留。要继续吗"))
+                .setMessage(Lang.t("对话记录会被删除，提示词版本、脑里的文件和配置都会保留。要继续吗"))
                 .setPositiveButton(Lang.t("清空"), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int which) {
                         store.clearMessages();

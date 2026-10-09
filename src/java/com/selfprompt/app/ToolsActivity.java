@@ -128,6 +128,28 @@ public class ToolsActivity extends Activity {
                 ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 12, 0, 0));
         UiKit.card(root, autoCard, this);
 
+        // 文件管理权限：读写「脑」需要它
+        LinearLayout permCard = UiKit.column(this);
+        permCard.setPadding(UiKit.dp(this, 18), UiKit.dp(this, 16), UiKit.dp(this, 18), UiKit.dp(this, 16));
+        LinearLayout permHead = UiKit.row(this);
+        permHead.setGravity(Gravity.CENTER_VERTICAL);
+        permHead.addView(UiKit.label(this, Lang.t("文件管理权限"), 15, UiKit.TEXT, true, Gravity.START),
+                new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        permHead.addView(UiKit.smallButton(this, Lang.t("去授权"), UiKit.ACCENT, UiKit.ACCENT_SOFT, 10,
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        openFileAccess();
+                    }
+                }));
+        permCard.addView(permHead);
+        permCard.addView(UiKit.label(this,
+                        Lang.t("「脑」把记忆以文件形式存在本地，需要「所有文件访问」权限。"
+                                + "授予后它才能读写「脑」，写日记工具也才用得了"),
+                        12.5f, UiKit.TEXT_SUB, false, Gravity.START),
+                UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 8, 0, 0));
+        UiKit.card(root, permCard, this);
+
         root.addView(UiKit.label(this,
                 "工具是它自己的手段，开不开由你定；但改成什么样，是它自己的元反思层的事，"
                         + "它只能提请求，这层没变",
@@ -143,5 +165,21 @@ public class ToolsActivity extends Activity {
 
         UiKit.edgeToEdge(this, root, UiKit.dp(this, 14), root, UiKit.dp(this, 28), true);
         UiKit.pageIn(root);
+    }
+
+    private void openFileAccess() {
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= 30) {
+                startActivity(new android.content.Intent(
+                        android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                        android.net.Uri.parse("package:" + getPackageName())));
+            } else {
+                startActivity(new android.content.Intent(
+                        android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        android.net.Uri.parse("package:" + getPackageName())));
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, Lang.t("打不开系统设置，请手动到设置里授权"), Toast.LENGTH_LONG).show();
+        }
     }
 }

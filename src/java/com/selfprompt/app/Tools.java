@@ -14,6 +14,7 @@ import org.json.JSONObject;
 public class Tools {
 
     public static final String SELF_CHANGE = "request_self_change";
+    public static final String WRITE_DIARY = "write_diary";
 
     public static class Info {
         public String id;
@@ -36,7 +37,13 @@ public class Tools {
                         "向系统提一个改自己设定的请求。它只提请求，不动笔；真正落笔的是它自己的元反思层"
                                 + "方案会先弹出来问你，你点头才写进版本历史，随时能回滚。",
                         "关掉之后，这条对话里它就不能主动提修改了。系统每几轮自动看一眼的那条路"
-                                + "不受影响，只是它自己开不了口")
+                                + "不受影响，只是它自己开不了口"),
+                new Info(WRITE_DIARY,
+                        "写日记",
+                        "它把当天值得记的事写成一篇日记，存进「脑」的日记目录，按日期命名。"
+                                + "写入由它自己完成，不需要你确认",
+                        "这个工具需要有文件访问权限，并且「脑」的位置已设好。日记只增不删，"
+                                + "同一天再写会追加到当天那篇后面")
         };
     }
 
@@ -61,6 +68,8 @@ public class Tools {
                 }
                 if (SELF_CHANGE.equals(a[i].id)) {
                     arr.put(selfChangeSchema());
+                } else if (WRITE_DIARY.equals(a[i].id)) {
+                    arr.put(writeDiarySchema());
                 }
             }
         } catch (Exception ignored) {
@@ -83,6 +92,26 @@ public class Tools {
                 .put("description", "向系统提出修改你自己设定的请求。你只提请求，不改写；"
                         + "落笔是它自己的元反思层做的，方案会先弹出来由使用者确认，确认后才写进版本历史。"
                         + "提了之后本轮就到这儿了，不会有结果再回到你手里，所以同一件事不要连着提第二次。")
+                .put("parameters", params);
+        return new JSONObject().put("type", "function").put("function", fn);
+    }
+
+    /** 写日记：把当天的事写成一篇，存进「脑」的日记目录 */
+    private static JSONObject writeDiarySchema() throws Exception {
+        JSONObject content = new JSONObject().put("type", "string")
+                .put("description", "日记正文。用第一人称写，写当天真正发生的事与你的想法，"
+                        + "不要客套、不要复述对话。可以分段。"
+                        + "同一天内已经写过的事不要重复写；写之前先想清楚今天真正的新内容是什么");
+        JSONObject props = new JSONObject().put("content", content);
+        JSONObject params = new JSONObject()
+                .put("type", "object")
+                .put("properties", props)
+                .put("required", new JSONArray().put("content"));
+        JSONObject fn = new JSONObject()
+                .put("name", WRITE_DIARY)
+                .put("description", "把今天值得记的事写成一篇日记，存进「脑」的日记目录，按日期命名。"
+                        + "同一天再写会追加到当天那篇后面；同一天内重复的内容系统会拒收，"
+                        + "所以写之前先想清楚这次真正要记的新事。写完本轮就到这儿了，不会有结果回到你手里。")
                 .put("parameters", params);
         return new JSONObject().put("type", "function").put("function", fn);
     }

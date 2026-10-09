@@ -134,29 +134,48 @@ public class SettingsActivity extends Activity {
                         ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 0));
         UiKit.card(root, look, this);
 
-        // ============ 上下文 ============
+        // ============ 记忆处理 ============
         LinearLayout ctx = UiKit.column(this);
         ctx.setPadding(UiKit.dp(this, 18), UiKit.dp(this, 16), UiKit.dp(this, 18), UiKit.dp(this, 18));
-        ctx.addView(UiKit.sectionTitle(this, "上下文"),
+        ctx.addView(UiKit.sectionTitle(this, "记忆处理"),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         0f, this, 0, 0, 0, 12));
         ctx.addView(UiKit.label(this,
-                        "对话超过 40 条时，把最老的 20 条压成日志存进记忆，原始对话挪进前代记录。"
-                                + "这样它长期记得的东西只有记忆这一条出口，删记忆才等于真的抹掉",
+                        "对话攒到一定量时，后台自动提炼记忆（不影响聊天）："
+                                + "海马体从对话里提炼原始信息，颞叶分类归档进「脑」的记忆流",
                         12, UiKit.TEXT_SUB, false, Gravity.START),
                 UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
-                        0f, this, 0, 0, 0, 12));
-        CheckBox compressBox = new CheckBox(this);
-        compressBox.setText(Lang.t("自动压缩旧对话"));
-        compressBox.setTextSize(13);
-        compressBox.setTextColor(UiKit.TEXT);
-        compressBox.setChecked(store.compressionOn());
-        compressBox.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                store.setCompressionOn(((CheckBox) v).isChecked());
-            }
-        });
-        ctx.addView(compressBox);
+                        0f, this, 0, 0, 0, 14));
+        addNumRow(ctx, "模型最大上下文长度", "tokens", String.valueOf(store.memLimit()),
+                new NumCallback() {
+                    public void onNum(int v) {
+                        store.setMemLimit(v);
+                    }
+                });
+        addNumRow(ctx, "触发比例", "%", String.valueOf(store.memRatio()),
+                new NumCallback() {
+                    public void onNum(int v) {
+                        store.setMemRatio(v);
+                    }
+                });
+        addNumRow(ctx, "前额叶看最近", "条对话", String.valueOf(store.routeWindow()),
+                new NumCallback() {
+                    public void onNum(int v) {
+                        store.setRouteWindow(v);
+                    }
+                });
+        addNumRow(ctx, "记忆整理后仅保留上下文轮数", "轮", String.valueOf(store.keepAfterTidy()),
+                new NumCallback() {
+                    public void onNum(int v) {
+                        store.setKeepAfterTidy(v);
+                    }
+                });
+        ctx.addView(UiKit.label(this,
+                        "例：上限 128000 tokens、比例 70%，则上下文用到约 89600 tokens 时触发一次记忆整理；"
+                                + "整理完成后，上下文只保留上面设定的轮数（前面的对话挪进前代记录）",
+                        11.5f, 0xFFA6ADB4, false, Gravity.START),
+                UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                        0f, this, 0, 6, 0, 0));
         UiKit.card(root, ctx, this);
 
         // ============ 数据 ============
@@ -260,5 +279,48 @@ public class SettingsActivity extends Activity {
 
     private TextView sub(String s) {
         return UiKit.label(this, s, 11.5f, 0xFFA6ADB4, false, Gravity.START);
+    }
+
+    private interface NumCallback {
+        void onNum(int v);
+    }
+
+    /** 一行设置：标签 + 当前值按钮，点开输数字 */
+    private void addNumRow(LinearLayout parent, final String label, final String unit,
+                           final String value, final NumCallback cb) {
+        LinearLayout row = UiKit.row(this);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.addView(UiKit.label(this, label, 13, UiKit.TEXT, false, Gravity.START),
+                new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        row.addView(UiKit.smallButton(this, value + " " + unit, UiKit.ACCENT, UiKit.ACCENT_SOFT, 10,
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        askNum(label, unit, value, cb);
+                    }
+                }));
+        parent.addView(row, UiKit.lp(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, 0f, this, 0, 0, 0, 8));
+    }
+
+    private void askNum(final String label, String unit, String value, final NumCallback cb) {
+        final android.widget.EditText input = UiKit.field(this, label, value);
+        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        UiKit.dialog(this)
+                .setTitle(label + "（" + unit + "）")
+                .setView(input)
+                .setPositiveButton(Lang.t("保存"), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface d, int which) {
+                        try {
+                            int v = Integer.parseInt(input.getText().toString().trim());
+                            cb.onNum(v);
+                            Toast.makeText(SettingsActivity.this, Lang.t("已保存"), Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(SettingsActivity.this, Lang.t("请输入数字"), Toast.LENGTH_SHORT).show();
+                        }
+                        recreate();
+                    }
+                })
+                .setNegativeButton(Lang.t("取消"), null)
+                .show();
     }
 }

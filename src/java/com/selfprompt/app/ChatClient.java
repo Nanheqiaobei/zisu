@@ -34,6 +34,10 @@ public class ChatClient {
 
         /** 结束；error 非 null 表示失败 */
         void onDone(String error);
+
+        /** token 用量（部分接口返回；默认空实现，不强制实现类处理） */
+        default void onUsage(int promptTokens, int completionTokens, int cacheHit, int cacheMiss) {
+        }
     }
 
     public static class ToolCall {
@@ -132,6 +136,12 @@ public class ChatClient {
             JSONObject thinkBody = new JSONObject();
             thinkBody.put("type", thinking ? "enabled" : "disabled");
             body.put("thinking", thinkBody);
+            // 让 DeepSeek 在流末尾多带一个 usage 块（缓存命中/未命中都在这），用于上下文监测
+            if (base.contains("deepseek")) {
+                JSONObject so = new JSONObject();
+                so.put("include_usage", true);
+                body.put("stream_options", so);
+            }
             if (thinking && effort != null && !effort.trim().isEmpty()) {
                 body.put("reasoning_effort", effort.trim());
             }
@@ -181,6 +191,15 @@ public class ChatClient {
                     break;
                 }
                 JSONObject o = new JSONObject(data);
+                // usage 块：通常出现在流的最后（choices 为空），先把用量收下
+                JSONObject usage = o.optJSONObject("usage");
+                if (usage != null) {
+                    listener.onUsage(
+                            usage.optInt("prompt_tokens", 0),
+                            usage.optInt("completion_tokens", 0),
+                            usage.optInt("prompt_cache_hit_tokens", 0),
+                            usage.optInt("prompt_cache_miss_tokens", 0));
+                }
                 JSONArray choices = o.optJSONArray("choices");
                 if (choices == null || choices.length() == 0) {
                     continue;

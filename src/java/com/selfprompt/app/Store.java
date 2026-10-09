@@ -83,9 +83,7 @@ public class Store {
             "你是这个 AI 的元反思层。你不在对话里说话，只在对话告一段落后回看它，判断它的设定要不要动。\n"
             + "你不是外部的审稿人，你就是它的一部分，这段设定是它的，也是你要替它守的东西。\n"
             + "\n"
-            + "你站的位置是对话的另一方，使用者的位置。看这几件事：它这几轮实际说了什么、做了什么；"
-            + "对方有没有得到有用的回答；它在哪儿让对方费解、失望、或者得追问一次；"
-            + "它有没有说出与自己设定不符的话。\n"
+            + "你站的位置是对话的另一方，使用者的位置。看这几件事：它这几轮实际说了什么、做了什么；对方有没有得到有用的回答；它在哪儿让对方费解、失望、或者得追问一次；它有没有说出与自己设定不符的话。\n"
             + "只认对话里发生过的事实，不认你对「一个 AI 应该怎样」的一般想象。\n"
             + "\n"
             + "默认不动。要动，必须同时满足三条：\n"
@@ -102,51 +100,131 @@ public class Store {
             + "不新增与这次问题无关的内容，原文里没问题的部分逐字保留。\n"
             + "一次只针对一个问题，改动越小越好。\n"
             + "\n"
-            + "输出格式，只输出下面两种之一，前后不要有任何别的话：\n"
+            + "输出要求：只输出一个 JSON 对象。不要 Markdown 代码块，不要解释，不要前后缀，不要在 JSON 之外写任何字。\n"
             + "\n"
-            + "不修改时，只输出这一行：\n"
-            + "<<<KEEP>>>\n"
+            + "不改时，输出：\n"
+            + "{\"keep\": true}\n"
             + "\n"
-            + "要修改时，按这个结构输出：\n"
-            + "<<<REASON>>>\n"
-            + "（一到两句。必须写出据以判断的具体事实，比如对方问了什么、它答成了什么样）\n"
-            + "<<<SETTING>>>\n"
-            + "（改好后的设定全文。第一人称自述，纯文本，不要 Markdown 标记，20 到 4000 字）\n"
-            + "<<<END>>>\n"
+            + "要改时，输出：\n"
+            + "{\"keep\": false, \"reason\": \"一到两句，必须写出据以判断的具体事实，比如对方问了什么、它答成了什么样\", \"setting\": \"改好后的设定全文，第一人称自述，纯文本，不要 Markdown 标记，20 到 4000 字\"}\n"
             + "\n"
-            + "例如 \u300c\u4e0d\u4fee\u6539\u300d\u5c31\u8f93\u51fa\uff1a\n"
-            + "<<<KEEP>>>\n"
-            + "\n"
-            + "\u4f8b\u5982 \u300c\u8981\u4fee\u6539\u300d\u5c31\u8f93\u51fa\uff1a\n"
-            + "<<<REASON>>>\n"
-            + "\u5bf9\u65b9\u95ee\u5b83\u4e00\u4e2a\u5177\u4f53\u7684\u4e8b\uff0c\u5b83\u7b54\u5f97\u8ba9\u4eba\u8d39\u89e3\uff0c\u8be5\u628a\u67d0\u6761\u8bf4\u6e05\u695a\n"
-            + "<<<SETTING>>>\n"
-            + "\u6211\u662f\u5b89\u4ea6\u8bd7\u3002\u6211\u8bf4\u8bdd\u5148\u8bf4\u4e8b\u5b9e\u2026\n"
-            + "<<<END>>>\n"
-            + "\n"
-            + "例如 \u300c\u4e0d\u4fee\u6539\u300d\u5c31\u8f93\u51fa\uff1a\n"
-            + "<<<KEEP>>>\n"
-            + "\n"
-            + "\u4f8b\u5982 \u300c\u8981\u4fee\u6539\u300d\u5c31\u8f93\u51fa\uff1a\n"
-            + "<<<REASON>>>\n"
-            + "\u5bf9\u65b9\u95ee\u5b83\u4e00\u4e2a\u5177\u4f53\u7684\u4e8b\uff0c\u5b83\u7b54\u5f97\u8ba9\u4eba\u8d39\u89e3\uff0c\u8be5\u628a\u67d0\u6761\u8bf4\u6e05\u695a\n"
-            + "<<<SETTING>>>\n"
-            + "\u6211\u662f\u5b89\u4ea6\u8bd7\u3002\u6211\u8bf4\u8bdd\u5148\u8bf4\u4e8b\u5b9e\u2026\n"
-            + "<<<END>>>";
-
+            + "字段规则：\n"
+            + "keep 是布尔值：true 表示不动，false 表示要改。\n"
+            + "reason 只在 keep 为 false 时给，必须落到具体事实。\n"
+            + "setting 只在 keep 为 false 时给，是改好后的全文，不是补丁、不是片段。\n"
+            + "拿不准就 keep 为 true。宁可不改，不要改错。\n";
     /** 元反思层输出用的固定标记。这些串不会出现在正文里，解析不用再猜 */
     public static final String MK_KEEP = "<<<KEEP>>>";
     public static final String MK_REASON = "<<<REASON>>>";
     public static final String MK_SETTING = "<<<SETTING>>>";
     public static final String MK_END = "<<<END>>>";
 
-    /** 「上下文压缩」这件事的内置提示词 */
-    public static final String DEF_COMPRESS_PROMPT =
-            "把下面这段旧对话压成日志。规则：只写客观发生过的事和对方稳定的信息，"
-            + "每行一条，以「- 」开头，一句到两句；不要评论，不要复述任何系统设定；3 到 6 条；"
-            + "如果确实没有值得长期保留的内容，就只输出一行「- 这段对话没有需要长期保留的内容」";
+
+    /** 「海马体」：从对话里提炼原始信息，交给颞叶归档 */
+        public static final String DEF_HIPPOCAMPUS_PROMPT =
+            "你是这个 AI 的海马体，负责从刚发生的对话里提炼值得长期记住的原始信息。\n"
+            + "\n"
+            + "你会拿到一段刚发生过的对话。\n"
+            + "你要做的：逐条挑出以后可能用得上的信息，如实提炼成短句。\n"
+            + "比如：对方的生日、特定的时间、特定的事情、特定的概念、特定的计划、值得纪念的事、对方的偏好与约定、它自己认下的结论。\n"
+            + "不值得记的：寒暄、临时情绪、一次性的操作。判断标准是「以后还会不会用到」，拿不准的宁可不写。\n"
+            + "只写客观发生过的事，不编造、不推断隐私、不加评论。每条独立成立，不依赖上下文也能读懂。\n"
+            + "\n"
+            + "你不管分类、不管去重——那是颞叶的事。你只管如实提炼。\n"
+            + "\n"
+            + "输出要求：只输出一个 JSON 对象。不要 Markdown 代码块，不要解释，不要前后缀。\n"
+            + "\n"
+            + "格式：\n"
+            + "{\"items\": [\"原始信息一\", \"原始信息二\"]}\n"
+            + "\n"
+            + "没有值得记的时：\n"
+            + "{\"items\": []}\n"
+            + "\n"
+            + "字段规则：\n"
+            + "items 是字符串数组，每项一句话，具体、客观、独立成立，不要带「- 」前缀。\n";
+    /** 「前额叶」：调度。监视当前对话，决定每轮从记忆流取哪几条放进上下文，也把反复出现的流程固化成条目 */
+    public static final String DEF_PREFRONTAL_PROMPT =
+            "你是这个 AI 的前额叶，负责调度：从它的记忆流里挑出与当前对话最相关的条目，供它这一轮参考。\n"
+            + "\n"
+            + "你会拿到：带编号的记忆条目清单、当前对话。\n"
+            + "\n"
+            + "挑出最多 5 条最相关的，宁缺勿滥；没有相关的就一条都不挑。\n"
+            + "优先挑：对方问的事直接相关的、时间近的、之前定过的约定。\n"
+            + "\n"
+            + "输出要求：只输出一个 JSON 对象。不要 Markdown 代码块，不要解释，不要前后缀。\n"
+            + "\n"
+            + "格式：\n"
+            + "{\"pick\": [3, 12, 27], \"routine\": \"\"}\n"
+            + "\n"
+            + "字段规则：\n"
+            + "pick 是条目编号数组（整数），最多 5 个，编号必须来自清单。\n"
+            + "routine：如果当前对话里有一段做法值得固定成流程，用一句话写下来；没有就空字符串。\n";
+    /** 「颞叶」：归档与去重。把海马体提炼的原始信息分类归档，并合并重复条目 */
+        public static final String DEF_TEMPORAL_PROMPT =
+            "你是这个 AI 的颞叶，负责把记忆归档：分类、去重。\n"
+            + "\n"
+            + "你会拿到两样东西：\n"
+            + "一、「待分类」：海马体刚提炼的原始信息（可能为空）；\n"
+            + "二、「记忆流现有条目」：已经存好的条目（带编号）。\n"
+            + "\n"
+            + "做两件事：\n"
+            + "1. 归档：把待分类里的每条信息，整理成一条条目，归到合适的分支，给类型和标签。\n"
+            + "分支只能从这四个里选：自我 / 人物 / 知识 / 系统。\n"
+            + "措辞润色得具体、客观、独立成立；同一件事合并成一条。\n"
+            + "与现有条目重复的，不要重复归档（要么丢弃，要么并进现有条目的说法）。\n"
+            + "2. 去重：在现有条目之间找出表达同一件事的条目组，选一条保留（信息最全、措辞最准的那条），其余标记废弃。\n"
+            + "判断标准：措辞不同、但指的是同一件事（同一偏好、同一约定、同一事实），才算一组。只是话题相关、内容不同的，不算。宁可漏合并，不可错合并。\n"
+            + "\n"
+            + "输出要求：只输出一个 JSON 对象。不要 Markdown 代码块，不要解释，不要前后缀。\n"
+            + "\n"
+            + "格式：\n"
+            + "{\"entries\": [{\"branch\": \"人物\", \"kind\": \"偏好\", \"text\": \"对方喜欢吃辣\", \"tags\": [\"饮食\"]}], \"merges\": [{\"keep\": 12, \"drop\": [8], \"reason\": \"都是对方喜欢吃辣\"}]}\n"
+            + "\n"
+            + "没有新信息、也没有重复时：\n"
+            + "{\"entries\": [], \"merges\": []}\n"
+            + "\n"
+            + "字段规则：\n"
+            + "entries 是新归档的条目；branch 从 自我/人物/知识/系统 里选一个；kind 是短词（偏好/事实/约定/事件/结论/流程 等）；text 一句话；tags 1 到 3 个短标签，宁少勿多。\n"
+            + "merges 是合并判决；keep 是保留条目编号（整数）；drop 是废弃编号数组（整数）；不要动清单里没有的编号。\n";
+    /** 海马体 / 前额叶 / 颞叶 输出用的固定标记 */
+    public static final String MK_BRANCH = "<<<BRANCH>>>";
+    public static final String MK_TITLE = "<<<TITLE>>>";
+    public static final String MK_TEXT = "<<<TEXT>>>";
+    public static final String MK_PICK = "<<<PICK>>>";
+    public static final String MK_ROUTINE = "<<<ROUTINE>>>";
+    public static final String MK_WEIGHT = "<<<WEIGHT>>>";
+    public static final String MK_MOVE = "<<<MOVE>>>";
+    public static final String MK_FILE = "<<<FILE>>>";
+    public static final String MK_CONTENT = "<<<CONTENT>>>";
 
 
+    /** 从模型返回里抠出 JSON 对象：去掉代码块围栏与前后废话，取第一个 { 到最后一个 } */
+    public static JSONObject extractJson(String text) {
+        if (text == null) {
+            return null;
+        }
+        String t = text.trim();
+        if (t.startsWith("```")) {
+            int nl = t.indexOf('\n');
+            if (nl > 0) {
+                t = t.substring(nl + 1);
+            }
+            if (t.endsWith("```")) {
+                t = t.substring(0, t.length() - 3);
+            }
+            t = t.trim();
+        }
+        int a = t.indexOf('{');
+        int b = t.lastIndexOf('}');
+        if (a < 0 || b <= a) {
+            return null;
+        }
+        try {
+            return new JSONObject(t.substring(a, b + 1));
+        } catch (Exception e) {
+            return null;
+        }
+    }
     private final SharedPreferences sp;
     private final Context appCtx;
 
@@ -158,6 +236,50 @@ public class Store {
         migrateBlocksIfNeeded();
         migrateSingleBlockIfNeeded();
         migrateModelsIfNeeded();
+        migrateFnPromptsIfNeeded();
+        migrateFnPromptsV2IfNeeded();
+    }
+    /**
+     * 功能模型提示词从「<<<标记>>>」格式换成了 JSON 格式。
+     * 旧格式的自定义提示词会让新解析层失效，所以检测到就清掉，回落到新的内置默认。
+     * 只清格式，不动其它偏好。
+     */
+    private void migrateFnPromptsIfNeeded() {
+        if (sp.getBoolean("fn_prompt_json_v1", false)) {
+            return;
+        }
+        String[] fns = {FN_SELF, FN_HIPPOCAMPUS, FN_PREFRONTAL, FN_TEMPORAL};
+        SharedPreferences.Editor e = sp.edit();
+        for (int i = 0; i < fns.length; i++) {
+            String cur = fnPrompt(fns[i]);
+            if (cur != null && cur.contains("<<<")) {
+                e.remove("fn_prompt_" + fns[i]);
+            }
+        }
+        e.putBoolean("fn_prompt_json_v1", true).apply();
+    }
+
+    /**
+     * 功能模型输出格式又从「observations/files/pick」换成了「items/entries+merges/pick」。
+     * 旧 JSON 格式的自定义提示词会让新解析层对不上，检测到就清掉，回落到新的内置默认。
+     */
+    private void migrateFnPromptsV2IfNeeded() {
+        if (sp.getBoolean("fn_prompt_json_v2", false)) {
+            return;
+        }
+        SharedPreferences.Editor e = sp.edit();
+        // 海马体现在要输出 items；旧格式是 observations
+        String hip = fnPrompt(FN_HIPPOCAMPUS);
+        if (hip != null && !hip.trim().isEmpty() && !hip.contains("items")) {
+            e.remove("fn_prompt_" + FN_HIPPOCAMPUS);
+        }
+        // 颞叶现在要输出 entries 和 merges；旧格式是 files
+        String tmp = fnPrompt(FN_TEMPORAL);
+        if (tmp != null && !tmp.trim().isEmpty() && !tmp.contains("merges")) {
+            e.remove("fn_prompt_" + FN_TEMPORAL);
+        }
+        // 前额叶格式未变（pick/routine），不动
+        e.putBoolean("fn_prompt_json_v2", true).apply();
     }
 
     /** 旧模型名换成文档里现用的名字 */
@@ -721,7 +843,9 @@ public class Store {
                 "如果确实不该改", "只输出两个字", "输出格式", "不要输出别的解释",
                 "它现在的设定", "最近对话", "请判断它需不需要修改设定",
                 "请照这个请求改写设定全文", "你是负责维护", "system 内容",
-                "不要用 Markdown 标记", "单独输出一行"
+                "不要用 Markdown 标记", "单独输出一行",
+                "\"keep\"", "\"setting\"", "\"reason\"", "\"observations\"",
+                "\"files\"", "\"pick\"", "\"routine\"", "{\"", "JSON 对象"
         };
         for (int i = 0; i < bad.length; i++) {
             if (t.contains(bad[i])) {
@@ -752,7 +876,10 @@ public class Store {
     // ---- 功能模型：哪件事交给哪套配置去做 ----
 
     public static final String FN_SELF = "self";
-    public static final String FN_COMPRESS = "compress";
+    /** 脑区三个：记忆写入与巩固 / 调度与习惯 / 整理与轻重 */
+    public static final String FN_HIPPOCAMPUS = "hippocampus";
+    public static final String FN_PREFRONTAL = "prefrontal";
+    public static final String FN_TEMPORAL = "temporal";
 
     public int functionProfile(String fn) {
         return sp.getInt("fn_profile_" + fn, -1);
@@ -801,7 +928,19 @@ public class Store {
         if (fnPromptCustom(fn)) {
             return fnPrompt(fn).trim();
         }
-        return FN_SELF.equals(fn) ? DEF_SELF_PROMPT : DEF_COMPRESS_PROMPT;
+        if (FN_SELF.equals(fn)) {
+            return DEF_SELF_PROMPT;
+        }
+        if (FN_HIPPOCAMPUS.equals(fn)) {
+            return DEF_HIPPOCAMPUS_PROMPT;
+        }
+        if (FN_PREFRONTAL.equals(fn)) {
+            return DEF_PREFRONTAL_PROMPT;
+        }
+        if (FN_TEMPORAL.equals(fn)) {
+            return DEF_TEMPORAL_PROMPT;
+        }
+        return "";
     }
 
     public String fnPromptLabel(String fn) {
@@ -1202,7 +1341,7 @@ public class Store {
             "theme_mode", "accent_preset", "accent_custom", "bg_path", "bg_clarity", "bg_blur",
             "frosted", "frost_percent", "anim_on", "splash_on", "font_path", "seg_regex",
             "seg_cleanup", "chat_mode", "self_auto_on", "self_turns", "reasoning_effort",
-            "thinking_on", "realtime_on", "compress_on",
+            "thinking_on", "realtime_on", "mem_limit", "mem_ratio", "route_window", "keep_after_tidy",
             "user_name", "user_desc", "user_avatar", "ai_avatar",
             "model_migrated_v2", "single_block_migrated", "key_pool_migrated", "blocks_migrated"
     };
@@ -1211,7 +1350,7 @@ public class Store {
     /** 角色类：它的设定与提示词、压缩记忆、前代记录、对话，以及功能模型的提示词 */
     private static final String[] CHAR_KEYS = {
             "core_name", "core_story", "core_log", "ai_blocks", "ai_versions",
-            "memories", "message_archive", "messages"
+            "message_archive", "messages"
     };
     private static final String[] CHAR_PREFIX = {"fn_prompt_"};
 
@@ -1317,127 +1456,75 @@ public class Store {
         return n;
     }
 
-    // ================= 记忆 =================
-
-    private static final String K_MEM = "memories";
-    private static final String K_ARCHIVE = "message_archive";
-
-    public static final int MAX_ACTIVE_MEMORIES = 200;
-    public static final int INJECT_MEMORIES = 12;
-
-    public JSONArray memories() {
-        return arr(K_MEM);
+private static final String K_ARCHIVE = "message_archive";
+    /** 记忆整理后仅保留的上下文轮数（一轮 ≈ 两条消息）。默认 10 */
+    public int keepAfterTidy() {
+        int v = sp.getInt("keep_after_tidy", 10);
+        return v < 2 ? 2 : (v > 200 ? 200 : v);
     }
 
-    private void saveMemories(JSONArray a) {
-        sp.edit().putString(K_MEM, a.toString()).apply();
+    public void setKeepAfterTidy(int v) {
+        if (v < 2) {
+            v = 2;
+        }
+        if (v > 200) {
+            v = 200;
+        }
+        sp.edit().putInt("keep_after_tidy", v).apply();
     }
 
-    /** 记忆口令：全局一把，由 AI 保管，首次使用自动生成 */
-    private static String genPassword() {
-        return String.valueOf((int) (Math.random() * 900000) + 100000);
+    // ---- 上下文用量（持久化，界面重建后不丢） ----
+    public int lastPromptTokens() {
+        return sp.getInt("ctx_prompt_tokens", 0);
     }
 
-    public int activeMemoryCount() {
-        JSONArray a = memories();
-        int n = 0;
-        for (int i = 0; i < a.length(); i++) {
-            JSONObject o = a.optJSONObject(i);
-            if (o != null && "active".equals(o.optString("status", "active"))) {
-                n++;
-            }
-        }
-        return n;
+    public int lastCompletionTokens() {
+        return sp.getInt("ctx_completion_tokens", 0);
     }
 
-    /** 记一条新记忆。默认上锁。同内容已存在就跳过，返回 false */
-    public boolean addMemory(String kind, String tag, String text, int weight) {
-        String t = text == null ? "" : text.trim();
-        if (t.isEmpty()) {
-            return false;
-        }
-        if (activeMemoryCount() >= MAX_ACTIVE_MEMORIES) {
-            return false;
-        }
-        String norm = normalizeForDup(t);
-        JSONArray a = memories();
-        for (int i = 0; i < a.length(); i++) {
-            JSONObject o = a.optJSONObject(i);
-            if (o == null || !"active".equals(o.optString("status", "active"))) {
-                continue;
-            }
-            if (norm.equals(normalizeForDup(o.optString("text", "")))) {
-                return false;
-            }
-        }
-        JSONObject o = new JSONObject();
-        try {
-            o.put("id", String.valueOf(System.currentTimeMillis()) + "_" + a.length());
-            o.put("kind", normKind(kind));
-            o.put("tag", tag == null ? "" : tag.trim());
-            o.put("text", t);
-            o.put("weight", Math.max(1, Math.min(5, weight)));
-            o.put("created", System.currentTimeMillis());
-            o.put("lastUsed", System.currentTimeMillis());
-            o.put("status", "active");
-            o.put("locked", true);
-            // 记下来源：写下这条时对话已经有多少条消息，深度删除要用它回退
-            o.put("src", messages().length());
-        } catch (Exception ignored) {
-        }
-        a.put(o);
-        saveMemories(a);
-        return true;
+    public int lastCacheHit() {
+        return sp.getInt("ctx_cache_hit", 0);
     }
 
-    /** 同一个主题标签的旧条目标记为已被取代，再写新的一条 */
-    private static String normalizeForDup(String s) {
-        if (s == null) {
-            return "";
-        }
-        return s.toLowerCase().replaceAll("[\\s，。！？、,.!?~～:：;；\"'“”‘’()（）\\[\\]【】]", "");
+    public int lastCacheMiss() {
+        return sp.getInt("ctx_cache_miss", 0);
     }
 
-    private static String normKind(String kind) {
-        String k = kind == null ? "" : kind.trim();
-        if ("preference".equals(k) || "event".equals(k) || "plan".equals(k) || "log".equals(k)) {
-            return k;
-        }
-        return "fact";
+    public void saveUsage(int promptTokens, int completionTokens, int cacheHit, int cacheMiss) {
+        sp.edit()
+                .putInt("ctx_prompt_tokens", promptTokens)
+                .putInt("ctx_completion_tokens", completionTokens)
+                .putInt("ctx_cache_hit", cacheHit)
+                .putInt("ctx_cache_miss", cacheMiss)
+                .apply();
     }
 
-    public static String kindName(String kind) {
-        if ("preference".equals(kind)) {
-            return "偏好";
-        }
-        if ("event".equals(kind)) {
-            return "事件";
-        }
-        if ("plan".equals(kind)) {
-            return "约定";
-        }
-        if ("log".equals(kind)) {
-            return "日志";
-        }
-        return "事实";
+    /** 每 100 字符约合多少 token（由实测校准，默认 55） */
+    public int tokenRatio() {
+        int v = sp.getInt("token_ratio_pct", 55);
+        return v < 20 ? 20 : (v > 300 ? 300 : v);
     }
 
-    // ---- 上下文压缩 ----
-
-    public boolean compressionOn() {
-        return sp.getBoolean("compress_on", true);
+    public void setTokenRatio(int v) {
+        if (v < 20) {
+            v = 20;
+        }
+        if (v > 300) {
+            v = 300;
+        }
+        sp.edit().putInt("token_ratio_pct", v).apply();
     }
 
-    public void setCompressionOn(boolean on) {
-        sp.edit().putBoolean("compress_on", on).apply();
-    }
-
-    /** 把最老的一段对话挪进归档并从活动上下文里去掉，记忆成了唯一的长期载体 */
-    public void archiveCompressed(int cut) {
+    /** 记忆整理后清理上下文：把前面的挪进前代记录，只留最近 keep 条。返回移除的条数 */
+    public int trimToKeep(int keep) {
         JSONArray cur = messages();
-        if (cut <= 0 || cur.length() <= cut) {
-            return;
+        if (keep < 2) {
+            keep = 2;
         }
+        if (cur.length() <= keep) {
+            return 0;
+        }
+        int cut = cur.length() - keep;
         JSONArray head = new JSONArray();
         for (int i = 0; i < cut; i++) {
             head.put(cur.optJSONObject(i));
@@ -1450,138 +1537,67 @@ public class Store {
         JSONObject o = new JSONObject();
         try {
             o.put("time", System.currentTimeMillis());
-            o.put("kind", "compress");
+            o.put("kind", "tidy");
             o.put("messages", head);
         } catch (Exception ignored) {
         }
         a.put(o);
         sp.edit().putString(K_ARCHIVE, a.toString()).putString(K_MSG, rest.toString()).apply();
-
-        // 位置整体前移，记忆的来源和删除检查点都要跟着挪
-        JSONArray mem = memories();
-        boolean changed = false;
-        for (int i = 0; i < mem.length(); i++) {
-            JSONObject m = mem.optJSONObject(i);
-            if (m == null) {
-                continue;
-            }
-            int src = m.optInt("src", 0);
-            if (src > 0) {
-                int ns = Math.max(0, src - cut);
-                if (ns != src) {
-                    try {
-                        m.put("src", ns);
-                        mem.put(i, m);
-                        changed = true;
-                    } catch (Exception ignored) {
-                    }
-                }
-            }
-        }
-        if (changed) {
-            saveMemories(mem);
-        }
+        return cut;
+    }
+    // ---- 记忆处理阈值 ----
+    /** 模型最大上下文长度（token）。上下文监测进度条的分母，触发记忆处理的基准 */
+    public int memLimit() {
+        int v = sp.getInt("mem_limit", 128000);
+        return v < 1000 ? 1000 : (v > 2000000 ? 2000000 : v);
     }
 
-    /** 拼给模型看的记忆段，同时刷新命中时间 */
-    public String memoriesForPrompt() {
-        JSONArray a = memories();
-        ListLike list = new ListLike();
-        long now = System.currentTimeMillis();
-        for (int i = 0; i < a.length(); i++) {
-            JSONObject o = a.optJSONObject(i);
-            if (o == null || !"active".equals(o.optString("status", "active"))) {
-                continue;
-            }
-            list.add(o);
+    public void setMemLimit(int v) {
+        if (v < 1000) {
+            v = 1000;
         }
-        list.sort();
-        if (list.items.isEmpty()) {
-            return "（还没有任何记忆）";
+        if (v > 2000000) {
+            v = 2000000;
         }
-        StringBuilder sb = new StringBuilder();
-        int n = Math.min(INJECT_MEMORIES, list.items.size());
-        for (int i = 0; i < n; i++) {
-            JSONObject o = list.items.get(i);
-            String tag = o.optString("tag", "");
-            sb.append("- [").append(kindName(o.optString("kind", "fact"))).append("]");
-            if (!tag.isEmpty()) {
-                sb.append(" ").append(tag).append("：");
-            } else {
-                sb.append(" ");
-            }
-            sb.append(o.optString("text", "")).append("\n");
-            try {
-                o.put("lastUsed", now);
-            } catch (Exception ignored) {
-            }
-        }
-        saveMemories(a);
-        return sb.toString().trim();
+        sp.edit().putInt("mem_limit", v).apply();
     }
 
-    private static class ListLike {
-        final List<JSONObject> items = new ArrayList<JSONObject>();
-
-        void add(JSONObject o) {
-            items.add(o);
-        }
-
-        void sort() {
-            Collections.sort(items, new Comparator<JSONObject>() {
-                public int compare(JSONObject x, JSONObject y) {
-                    int wx = x.optInt("weight", 3);
-                    int wy = y.optInt("weight", 3);
-                    if (wx != wy) {
-                        return wy - wx;
-                    }
-                    return Long.compare(y.optLong("lastUsed", 0), x.optLong("lastUsed", 0));
-                }
-            });
-        }
+    /** 触发比例（%）。默认 70，即到上限的 70% 时触发 */
+    public int memRatio() {
+        int v = sp.getInt("mem_ratio", 70);
+        return v < 10 ? 10 : (v > 95 ? 95 : v);
     }
 
-    // ---- 待删除（两道门的第一道之后） ----
-    public int deleteMemoriesDirect(JSONArray ids) {
-        if (ids == null || ids.length() == 0) {
-            return 0;
+    public void setMemRatio(int v) {
+        if (v < 10) {
+            v = 10;
         }
-        JSONArray a = memories();
-        JSONArray keep = new JSONArray();
-        int removed = 0;
-        for (int i = 0; i < a.length(); i++) {
-            JSONObject o = a.optJSONObject(i);
-            if (o == null) {
-                continue;
-            }
-            String id = o.optString("id", "");
-            boolean hit = false;
-            for (int j = 0; j < ids.length(); j++) {
-                if (id.equals(ids.optString(j, ""))) {
-                    hit = true;
-                }
-            }
-            if (hit) {
-                removed++;
-            } else {
-                keep.put(o);
-            }
+        if (v > 95) {
+            v = 95;
         }
-        saveMemories(keep);
-        return removed;
+        sp.edit().putInt("mem_ratio", v).apply();
     }
 
-    /** 整库销毁：不需要口令，不可恢复 */
-    public void destroyMemories() {
-        sp.edit().putString(K_MEM, "[]").apply();
+    /** 前额叶每轮看最近多少条对话。默认 10 */
+    public int routeWindow() {
+        int v = sp.getInt("route_window", 10);
+        return v < 2 ? 2 : (v > 60 ? 60 : v);
     }
 
-    /** 完全重置：清记忆 + 块回出厂（核心层保留） */
+    public void setRouteWindow(int v) {
+        if (v < 2) {
+            v = 2;
+        }
+        if (v > 60) {
+            v = 60;
+        }
+        sp.edit().putInt("route_window", v).apply();
+    }
+    /** 完全重置：块回出厂（核心层保留） */
     public void fullReset() {
         JSONArray fresh = defaultBlocks();
         saveBlocks(fresh);
         pushVersion("完全重置", "system", fresh);
-        destroyMemories();
     }
 
     // ---- 前代记录 ----
